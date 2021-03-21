@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="aloha.mapper.BoardMapper">
+
+	<select id="list" resultType="Board">
+		SELECT *
+		FROM board
+		WHERE board_no > 0
+		ORDER BY group_no DESC
+		        ,seq_no ASC
+		        ,depth_no ASC
+		        ,reg_date DESC
+	</select>
+	
+	
+	<insert id="create" parameterType="Board">
+		INSERT INTO board( title, content, writer ) 
+			VALUES ( #{title}, #{content}, #{writer} )
+	</insert>
+	
+	
+	<select id="read" resultType="Board">
+		SELECT * 
+		FROM board
+		WHERE board_no = #{boardNo}
+	</select>
+
+
+	<update id="update" parameterType="Board">
+		UPDATE board
+		SET   title = #{title}
+		     ,content = #{content}
+		     ,writer = #{writer}
+		WHERE board_no = #{boardNo}
+	</update>
+
+	<delete id="delete">
+		DELETE
+		FROM board
+		WHERE board_no = #{boardNo}
+	</delete>
+	
+	<select id="search" resultType="Board">
+		SELECT *
+		FROM board
+		WHERE board_no > 0
+		  AND ( 
+		  		  title LIKE CONCAT('%', #{keyword}, '%')
+		  	   OR content LIKE CONCAT('%', #{keyword}, '%')
+		  	   OR writer LIKE CONCAT('%', #{keyword}, '%')
+		  	  )
+		ORDER BY group_no DESC
+		        ,seq_no ASC
+		        ,depth_no ASC
+		        ,reg_date DESC
+	</select>
+	
+	
+	<select id="searchWithPage" resultType="Board">
+		<![CDATA[
+			SELECT  @rownum := @rownum+1 row_no, b.*
+			FROM ( 
+					SELECT @rownum := #{startRowNum} 
+					FROM dual
+				 ) tmp
+				 ,board b
+			WHERE board_no > 0
+			  AND ( 
+			  		  title LIKE CONCAT('%', #{keyword}, '%')
+			  	   OR content LIKE CONCAT('%', #{keyword}, '%')
+			  	   OR writer LIKE CONCAT('%', #{keyword}, '%')
+			  	  )
+			ORDER BY group_no DESC
+			        ,seq_no ASC
+			        ,depth_no ASC
+			        ,reg_date DESC
+			LIMIT #{startRowNum}, #{rowsPerPage}
+		]]>
+	</select>
+	
+	
+	<insert id="uploadFile" parameterType="BoardAttach">
+		<selectKey resultType="int" keyProperty="boardNo" order="BEFORE">
+	        SELECT MAX(board_no) FROM board        
+	    </selectKey>  
+		INSERT INTO board_attach ( full_name, file_name, board_no ) 
+					VALUES ( #{fullName}, #{fileName}, #{boardNo} )
+	</insert>
+	
+	
+	<insert id="uploadUpdateFile" parameterType="BoardAttach">
+		INSERT INTO board_attach ( full_name, file_name, board_no ) 
+					VALUES ( #{fullName}, #{fileName}, #{boardNo} )
+	</insert>
+
+
+	<select id="readFileList" resultType="BoardAttach">
+		SELECT * 
+		FROM board_attach
+		WHERE board_no = #{boardNo}
+	</select>
+
+	<select id="readFile" resultType="BoardAttach">
+		SELECT * 
+		FROM board_attach
+		WHERE file_no = #{fileNo}
+	</select>
+	
+	
+	<delete id="deleteFile">
+		DELETE FROM board_attach
+		WHERE file_no = #{fileNo}
+	</delete>
+	
+	<select id="totalCount" resultType="int">
+		SELECT COUNT(*) as totalCount
+		FROM board
+	</select>
+	
+	<select id="totalCountByKeyword" resultType="int" parameterType="Page">
+		SELECT COUNT(*) as totalCount
+		FROM board
+		WHERE board_no > 0
+			  AND ( 
+			  		  title LIKE CONCAT('%', #{keyword}, '%')
+			  	   OR content LIKE CONCAT('%', #{keyword}, '%')
+			  	   OR writer LIKE CONCAT('%', #{keyword}, '%')
+			  	  )
+	</select>
+	
+	<select id="listWithPage" parameterType="Page" resultType="Board">
+		<![CDATA[
+			SELECT @rownum := @rownum+1 row_no, b.*
+			FROM ( 
+					SELECT @rownum := #{startRowNum} 
+					FROM dual
+				 ) tmp
+				 ,board b
+			ORDER BY group_no DESC
+			        ,seq_no ASC
+			        ,depth_no ASC
+			        ,reg_date DESC
+			LIMIT #{startRowNum}, #{rowsPerPage}		
+		]]>
+	</select>
+	
+	
+	<insert id="replyCreate" >
+		INSERT INTO board_reply ( board_no, content, writer )
+					VALUES ( #{boardNo}, #{content}, #{writer} )
+	</insert>
+	
+	<select id="replyList" resultType="Reply">
+		SELECT * 
+		FROM board_reply 
+		WHERE board_no = #{boardNo}
+		ORDER BY reply_no DESC,
+				 reg_date DESC
+	</select>
+	
+	
+	<update id="replyUpdate" >
+		UPDATE board_reply
+		SET   content = #{content}
+		     ,writer = #{writer}
+		WHERE reply_no = #{replyNo}
+	</update>
+	
+	<delete id="replyDelete" parameterType="Int">
+		DELETE FROM board_reply
+		WHERE reply_no = #{replyNo}
+	</delete>
+	
+	
+	<select id="getAttach" resultType="string">
+		SELECT  full_name
+		FROM 	board_attach
+		WHERE 	board_no = #{boardNo}
+		ORDER BY reg_date
+	</select>
+	
+	
+	<!-- 그룹번호 수정 -->
+	<update id="updateGroupNo">
+		UPDATE board
+		SET group_no = #{groupNo}
+		WHERE board_no = #{boardNo}
+	</update>
+	
+	<!-- MAX(글번호) -->
+	<select id="maxBoardNo" resultType="int">
+		SELECT MAX(board_no)
+		FROM board
+	</select>
+	
+	<!-- 답글 쓰기 -->
+	<insert id="answerCreate">
+		INSERT INTO board( title, content, writer, group_no, depth_no, seq_no ) 
+					VALUES ( #{title}, #{content}, #{writer}, #{groupNo}, #{depthNo}, #{seqNo} )
+	</insert>
+	
+	<!-- 계층번호 조회 -->
+	<select id="readDepthNo" resultType="int">
+		SELECT depth_no
+		FROM board
+		WHERE board_no = #{boardNo}
+	</select>
+	
+	<!-- 그룹번호 조회 -->
+	<select id="readGroupNo" resultType="int">
+		SELECT group_no
+		FROM board
+		WHERE board_no = #{boardNo}
+	</select>
+	
+	<!-- MAX(seq_no) 조회 -->
+	<select id="maxSeqNo" resultType="int">
+		SELECT MAX(seq_no)
+		FROM board
+	</select>
+	
+	
+	<!-- 그룹번호 게시글 개수 -->
+	<select id="countAnswer" resultType="int">
+		SELECT COUNT(*)
+		FROM board
+		WHERE group_no = #{groupNo}
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="view">
+		UPDATE board
+		SET view = view + 1
+		WHERE board_no = #{boardNo}
+	</update>
+	
+</mapper>
+
+

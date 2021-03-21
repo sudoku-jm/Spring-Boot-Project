@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<link rel="stylesheet" href="/css/reset.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+	<div class="login_wrap">
+		<h1>Login</h1>
+		
+		<form method="post" action="../index.html" th:action="@{/auth/login}">
+
+					<span>ID</span>
+					<input type="text" name="username" value="">
+					<span>PW</span>
+					<input type="password" name="password" value="">
+					<div class="chk_login">
+						<label>
+							<input type="checkbox" name="remember-me">로그인상태 유지
+						</label>
+					</div>
+					<span style="color:red;" th:text="${error}"></span>
+					<button class="btn_login">로그인</button>
+
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		</form>
+	</div>
+</body>
+</html>

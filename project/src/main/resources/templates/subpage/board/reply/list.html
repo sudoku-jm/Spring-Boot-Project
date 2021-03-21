@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Reply</title>
+</head>
+<script src="/js/jquery-3.5.1.min.js"></script>
+<script>
+//댓글 수정 버튼 클릭 이벤트
+$('.btnReplyModify').on('click', function() {
+	var reply_list = $(this).parent();
+	reply_list.children('div').remove();
+	var reply_no = $(this).attr('data');
+	var reply_writer = reply_list.children('.replyWriter').text();
+	var reply_content = reply_list.children('.replyContent').text();
+	
+	var edtitor = "<div class='reply_modify clfix'> "
+				+ "<input type='text' name='replyWriter' class='replyWriter' value=" + reply_writer + " >"
+				+ "<textarea rows='4' cols='' class='w-100'>" + reply_content + "</textarea>"
+				+ "<button type='button' class='btn btn_reply btnReplyRegister' data='" + reply_no + "'>등록</button>"
+				+ "</div>"
+				
+	reply_list.append(edtitor);
+				
+				
+				
+	// 댓글 수정 등록
+	$('.btnReplyRegister').on('click', function() {
+		var btn = $(this);
+		var reply_no = btn.attr('data');
+		var board_no = $('#boardNo').val();
+		var reply_writer = btn.parent().children('input').val();
+		var reply_content = btn.parent().children('textarea').val();
+		
+		updateReply( reply_no, board_no, reply_writer, reply_content );
+		
+	});
+				
+});
+
+//댓글 삭제
+$('.btnReplyRemove').on('click', function() {
+	var reply_no = $(this).attr('data');
+	var board_no = $('#boardNo').val();
+	
+	removeReply(reply_no, board_no);
+});
+</script>
+
+<body>
+	<!-- 댓글 목록 -->
+	<li th:each=" reply : ${replyList}">
+		<span class="replyWriter" th:text="${reply.writer}"></span>
+		<span class="replyDate" th:text="${#dates.format(reply.regDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+		<th:block th:if="${reply.writer == userId}">
+			<a href="javascript:;" title="" class="btnReplyModify" th:data="${reply.replyNo}">수정</a>				
+			<a href="javascript:;" title="" class="btnReplyRemove" th:data="${reply.replyNo}">삭제</a>
+		</th:block>
+		<span class="replyContent" th:text="${reply.content}"></span>
+			
+	</li>
+</body>
+</html>

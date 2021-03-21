@@ -1,0 +1,183 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{/layouts/main_template}"
+	  >
+
+<head>
+<meta charset="UTF-8">
+<title>Board</title>
+</head>
+<script src="/js/jquery-3.5.1.min.js"></script>
+
+<script>
+		
+		$(document).ready(function() {
+			var pageNum = "[[${page.pageNum}]]";
+			var rowsPerPage = "[[${page.rowsPerPage}]]";
+			var totalCount = "[[${page.totalCount}]]";
+			var keyword = "[[${page.keyword}]]";
+			var pageCount = "[[${page.pageCount}]]";
+			var keyword = "[[${page.keyword}]]";
+			
+			
+			// 페이지당 게시글 수 초기화
+			$("#rowsPerPage option[value=" + rowsPerPage + "]").attr("selected", "selected");
+			
+			// 노출 페이지 수 초기화
+			$("#pageCount option[value=" + pageCount + "]" ).attr("selected", "selected");
+			
+			
+			// 줄 보기 변경 이벤트
+			$('#rowsPerPage').on('change', function() {
+				rowsPerPage = $(this).val();
+				
+				location.href = "/subpage/board/list?pageNum=" + 1
+										+ "&totalCount=" + totalCount
+										+ "&rowsPerPage=" + rowsPerPage
+										+ "&pageCount=" + pageCount
+										+ "&keyword=" + keyword;
+										
+				
+			});
+			
+			// 노출 페이지 개수 변경 이벤트
+			$('#pageCount').on('change', function() {
+				pageCount = $("#pageCount").val();
+				
+				location.href = "/subpage/board/list?pageNum=" + 1 
+										 + "&totalCount=" + totalCount 
+										 + "&rowsPerPage=" + rowsPerPage
+										 + "&pageCount=" + pageCount
+										 + "&keyword=" + keyword;
+			});
+			
+			
+		});
+		
+</script>
+<body>
+<div layout:fragment="content">
+	<div class="content_wrap">
+		<form id="board" action="success.html" th:action="@{search}" th:object="${board}" method="post">
+			<input type="hidden" name="pageNum" th:value="${page.pageNum}" />
+			<input type="hidden" name="rowsPerPage" th:value="${page.rowsPerPage}" />
+			<input type="hidden" name="firstPage" th:value="${page.firstPage}" />
+			<input type="hidden" name="lastPage" th:value="${page.lastPage}" />
+			<input type="hidden" name="totalCount" th:value="${page.totalCount}" />
+			<input type="hidden" name="pageCount" th:value="${page.pageCount}" />
+		
+		
+			<div class="top_area clfix">
+				<div class="left">
+					<a href="register.html" th:href="@{register}" class="btn">글쓰기</a>
+				</div>
+				<div class="right">
+					<select id="rowsPerPage" name="rowsPerPage">
+						<option value="5">5줄 보기</option>
+						<option value="10">10줄 보기</option>
+						<option value="15">15줄 보기</option>
+						<option value="20">20줄 보기</option>
+						<option value="30">30줄 보기</option>
+					</select>
+					
+					<select id="pageCount" name="pageCount">
+						<option value="5">5페이지 보기</option>
+						<option value="10">10페이지 보기</option>
+						<option value="20">20페이지 보기</option>
+					</select>
+					<input type="text" name="keyword" th:value="${page.keyword}" /><input type="submit" value="검색" class="btn sch"/>
+				</div>
+				
+				
+			</div>
+			
+			<div th:if="${page.totalCount} != 0">
+				<h5 th:text="|${page.totalCount} 건의 게시글이 조회되었습니다.|"  class="board_total_cnt"></h5>
+			</div>
+			<div th:if="${page.totalCount} == 0">
+				<h5 th:text="|'${page.keyword}' 으(/로) 조회된 결과가 없습니다.|"  class="board_total_cnt"></h5>
+			</div>
+			
+			
+			<table class="tbl_list">
+				<colgroup>
+				<col style="width:60px;">
+				<col style="width:60px;">
+				<col style="width:auto;">
+				<col style="width:100px">
+				<col style="width:150px;">
+				<col style="width:100px">
+				</colgroup>
+				<thead>	
+					<tr>
+						<th>행번호</th>
+						<th>글번호</th>
+						<th class="txtl">제목</th>
+						<th>작성자</th>
+						<th>등록일자</th>
+						<th>조회수</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${#lists.isEmpty(list)}">
+						<td colspan="4">
+							조회된 데이터가 없습니다.
+						</td>
+					</tr>
+					
+					<tr th:each="board : ${list}">
+						<td th:text="${board.rowNo}"></td>
+						<td th:text="${board.boardNo}"></td>
+						<td class="txtl">
+							<th:block th:if="${board.boardNo} != ${board.groupNo}">
+								<th:block th:each="no : ${#numbers.sequence(1, board.depthNo)}">
+									<span style="padding-left:20px;"></span>
+								</th:block>
+								<img th:src="@{/image/reply_arrow.png}" alt="reply_arrow" />
+							</th:block>
+							<a href="read.html" th:href="@{|/subpage/board/read?boardNo=${board.boardNo}|}" th:text="${board.title}" class="dotdot"></a>
+						</td>                                           
+						<td th:text="${board.writer}"></td>
+<!-- 						<td th:text="${#dates.format(board.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td> -->
+						<td th:text="${#dates.format(board.regDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${board.view}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		
+		
+		<div th:object="${page}" class="paging">
+		
+			<a th:href="|list?pageNum=*{firstPage}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" class="first">[처음]</a>
+			<th:block th:if="${page.prev > 0 }">
+				<a th:href="|list?pageNum=*{prev}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" class="prev">[이전]</a>
+			</th:block>
+			<th:block th:each="no : ${#numbers.sequence(page.startPage, page.endPage)}">
+				<th:block th:if="${no == page.pageNum}">
+					<a th:href="|list?pageNum=${no}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" title="" th:text="${no}" class="on"></a>
+				</th:block>
+				<th:block th:unless="${no == page.pageNum}">
+					<a th:href="|list?pageNum=${no}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" title="" th:text="${no}"></a>
+				</th:block>
+					
+			</th:block>
+			<th:block th:if="${page.next <= page.lastPage }">
+				<a th:href="|list?pageNum=*{next}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" class="next">[다음]</a>
+			</th:block>
+			<a th:href="|list?pageNum=*{lastPage}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" class="last">[끝]</a>
+		
+		</div>
+		
+		
+	</div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
