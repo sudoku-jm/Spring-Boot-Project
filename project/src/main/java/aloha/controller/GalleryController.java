@@ -29,26 +29,28 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import aloha.domain.Board;
-import aloha.domain.BoardAttach;
+import aloha.domain.Gallery;
+import aloha.domain.GalleryAttach;
 import aloha.domain.Page;
 import aloha.domain.Reply;
-import aloha.service.BoardService;
+import aloha.service.GalleryService;
+import aloha.service.GalleryService;
 import aloha.util.MediaUtils;
 
 @Controller
-@RequestMapping("/subpage/board")
-public class BoardController {
+@RequestMapping("/subpage/gallery")
+public class GalleryController {
+
 	
 	// 업로드 경로
 	@Value("${upload.path}")
 	private String uploadPath;
 	
-	private static final Logger log = LoggerFactory.getLogger(BoardController.class);
+	private static final Logger log = LoggerFactory.getLogger(GalleryController.class);
 
 	
 	@Autowired
-	private BoardService service;
+	private GalleryService service;
 	
 	
 	// 게시글 목록 화면
@@ -60,51 +62,55 @@ public class BoardController {
 		Integer pageNum = page.getPageNum();
 		String keyword = page.getKeyword();
 		
+		log.info("page : " + page.toString());
+		
 		// 조회된 전체 게시글 수
 		if( page.getTotalCount() == 0 )
 			totalCount = service.totalCount();
 		else
 			totalCount = page.getTotalCount();
 		
-		// 페이지 당 노출 게시글 수
-		if( page.getRowsPerPage() == 0 ) 
-			rowsPerPage = 10;
-		else
-			rowsPerPage = page.getRowsPerPage();
-		
-		// 노출 페이지 수
-		if( page.getPageCount() == 0 )
-			pageCount = 10;
-		else
-			pageCount = page.getPageCount();
-			
-		
-		if( page.getPageNum() == 0 ) {
-			page = new Page(1, rowsPerPage, totalCount, pageCount);
-		} else {
-			page = new Page(pageNum, rowsPerPage, totalCount, pageCount);
-		}
-		
-		
-		if( keyword == null || keyword == "" ) {
-			page.setKeyword("");
-			model.addAttribute("list", service.list(page));
-		} else {
-			page.setKeyword(keyword);
-			model.addAttribute("list", service.search(page));
-		}
+		log.info("totalCount : " + totalCount);
+//		
+//		// 페이지 당 노출 게시글 수
+//		if( page.getRowsPerPage() == 0 ) 
+//			rowsPerPage = 10;
+//		else
+//			rowsPerPage = page.getRowsPerPage();
+//		
+//		// 노출 페이지 수
+//		if( page.getPageCount() == 0 )
+//			pageCount = 10;
+//		else
+//			pageCount = page.getPageCount();
+//			
+//		
+//		if( page.getPageNum() == 0 ) {
+//			page = new Page(1, rowsPerPage, totalCount, pageCount);
+//		} else {
+//			page = new Page(pageNum, rowsPerPage, totalCount, pageCount);
+//		}
+//		
+//		
+//		if( keyword == null || keyword == "" ) {
+//			page.setKeyword("");
+//			model.addAttribute("list", service.list(page));
+//		} else {
+//			page.setKeyword(keyword);
+//			model.addAttribute("list", service.search(page));
+//		}
 		
 		
 		model.addAttribute("page", page);
 		
-		log.info(totalCount.toString());
-		log.info(page.toString());
+//		log.info(totalCount.toString());
+//		log.info(page.toString());
 	}	
 	
 	// 게시글 쓰기 화면
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping( value = "/register", method = RequestMethod.GET)
-	public void registerForm(Model model, Board board, Principal user) throws Exception {
+	public void registerForm(Model model, Gallery gallery, Principal user) throws Exception {
 		String userId = "";
 		if( user != null ) {
 			userId = user.getName();
@@ -114,10 +120,10 @@ public class BoardController {
 	
 	// 게시글 쓰기 처리
 	@RequestMapping( value = "/register", method = RequestMethod.POST)
-	public String register(Model model, Board board) throws Exception {
+	public String register(Model model, Gallery gallery) throws Exception {
 		// [파일 업로드]
-		MultipartFile[] file = board.getFile();
-		String[] filePath = board.getFilePath();
+		MultipartFile[] file = gallery.getFile();
+		String[] filePath = gallery.getFilePath();
 		
 		// file 정보 확인
 		for (MultipartFile f : file) {
@@ -127,18 +133,18 @@ public class BoardController {
 		}
 		
 		// 파일 업로드 처리 - uploadFiles()
-		ArrayList<BoardAttach> attachList = uploadFiles(file);
+		ArrayList<GalleryAttach> attachList = uploadFiles(file);
 		
 		// 게시글 등록
-		service.register(board);
+		service.register(gallery);
 		
 		// 첨부파일 등록
-		for (BoardAttach attach : attachList) {
+		for (GalleryAttach attach : attachList) {
 			service.uploadFile(attach);
 		}
 		
 		model.addAttribute("msg", "등록이 완료되었습니다.");
-		return "subpage/board/success";
+		return "subpage/gallery/success";
 	}
 	
 	// 게시글 읽기 화면
@@ -151,28 +157,28 @@ public class BoardController {
 			userId = user.getName();
 			model.addAttribute("userId", userId);
 		}
-		Board board = service.read(boardNo);
-		String writerId = board.getWriter();
+		Gallery gallery = service.read(boardNo);
+		String writerId = gallery.getWriter();
 		if( writerId.equals(userId) ) {
 			model.addAttribute("set", true);//작성자일 경우만 수정,삭제 노출
 		}
 		
-		if( board == null ) {
+		if( gallery == null ) {
 			model.addAttribute("msg", "조회할 수 없는 게시글입니다.");
-			return "subpage/board/empty";
+			return "subpage/gallery/empty";
 		}
 		
 		// 조회 수 증가
 		service.view(boardNo);
 		
 				
-		model.addAttribute("board", board );
+		model.addAttribute("gallery", gallery );
 		// 파일 목록 조회
 		model.addAttribute("files", service.readFileList(boardNo) );
 		// 댓글 목록 조회
 		model.addAttribute("replyList", service.replyList(boardNo));
 		
-		return "subpage/board/read";
+		return "subpage/gallery/read";
 	}
 	
 	
@@ -185,25 +191,25 @@ public class BoardController {
 			userId = user.getName();
 			model.addAttribute("userId", userId);
 		}
-		Board board = service.read(boardNo);
-		String writerId = board.getWriter();
+		Gallery gallery = service.read(boardNo);
+		String writerId = gallery.getWriter();
 		if( !writerId.equals(userId) ) {
 			return "redirect:/error/noAuth";
 		}
 				
 		
-		model.addAttribute( board );
+		model.addAttribute( gallery );
 		model.addAttribute("files", service.readFileList(boardNo) );
 		
-		return "subpage/board/modify";
+		return "subpage/gallery/modify";
 	}
 	
 	
 	// 게시글 수정 처리
 	@PostMapping("/modify")
-	public String modify(Model model, Board board, Integer[] deleteNo) throws Exception {
+	public String modify(Model model, Gallery gallery, Integer[] deleteNo) throws Exception {
 		// 선택한 파일 DB에서 삭제
-		ArrayList<BoardAttach> deleteFileList = new ArrayList<BoardAttach>(); 
+		ArrayList<GalleryAttach> deleteFileList = new ArrayList<GalleryAttach>(); 
 		// 삭제번호를 클릭한 경우에만 반복
 		if( deleteNo != null ) {
 			for (Integer no : deleteNo) {
@@ -216,8 +222,8 @@ public class BoardController {
 		deleteFiles(deleteFileList);
 		
 		// [파일 업로드]
-		MultipartFile[] file = board.getFile();
-		String[] filePath = board.getFilePath();
+		MultipartFile[] file = gallery.getFile();
+		String[] filePath = gallery.getFilePath();
 		
 		// file 정보 확인
 		for (MultipartFile f : file) {
@@ -227,24 +233,24 @@ public class BoardController {
 		}
 		
 		// 파일 업로드 처리 - uploadFiles()
-		ArrayList<BoardAttach> attachList = uploadFiles(file);
+		ArrayList<GalleryAttach> attachList = uploadFiles(file);
 		
-		service.modify(board);
+		service.modify(gallery);
 		
 		// 첨부파일 등록
-		for (BoardAttach attach : attachList) {
-			attach.setBoardNo(board.getBoardNo());
+		for (GalleryAttach attach : attachList) {
+			attach.setBoardNo(gallery.getBoardNo());
 			service.uploadModifyFile(attach);
 		}
 
 		model.addAttribute("msg", "수정이 완료되었습니다.");
-		return "subpage/board/success";
+		return "subpage/gallery/success";
 	}
 	
 	// 게시글 삭제 처리
 	@RequestMapping( value = "/remove", method = RequestMethod.POST)
 	public String remove(Model model,Integer boardNo) throws Exception{
-		List<BoardAttach> attachList =  service.readFileList(boardNo);
+		List<GalleryAttach> attachList =  service.readFileList(boardNo);
 		
 		// 게시글에 첨부한 파일 삭제
 		deleteFiles(attachList);
@@ -257,19 +263,19 @@ public class BoardController {
 		int groupCount = service.countAnswer(groupNo);
 		
 		if( groupCount > 1 ) {
-			Board board = new Board();
-			board.setBoardNo(boardNo);
-			board.setTitle("삭제된 글입니다");
-			board.setContent("-");
-			board.setWriter("-");
-			service.modify(board);
+			Gallery gallery = new Gallery();
+			gallery.setBoardNo(boardNo);
+			gallery.setTitle("삭제된 글입니다");
+			gallery.setContent("-");
+			gallery.setWriter("-");
+			service.modify(gallery);
 		} else {
 			service.remove(boardNo);
 		}
  		
 		
 		model.addAttribute("msg", "삭제가 완료되었습니다.");
-		return "subpage/board/success";
+		return "subpage/gallery/success";
 	}
 	
 	
@@ -300,15 +306,15 @@ public class BoardController {
 		model.addAttribute("list", service.search(page));
 		model.addAttribute("page", page);
 		
-		return "subpage/board/list";
+		return "subpage/gallery/list";
 	}
 	
 	
 	
 	// 파일 업로드 
-	private ArrayList<BoardAttach> uploadFiles(MultipartFile[] files) throws IOException {
+	private ArrayList<GalleryAttach> uploadFiles(MultipartFile[] files) throws IOException {
 		
-		ArrayList<BoardAttach> attachList = new ArrayList<BoardAttach>();
+		ArrayList<GalleryAttach> attachList = new ArrayList<GalleryAttach>();
 		
 		// 업로드 경로에 파일 복사
 		for (MultipartFile file : files) {
@@ -331,7 +337,7 @@ public class BoardController {
 			File target = new File(uploadPath, uploadFileName);
 			FileCopyUtils.copy(fileData, target);
 			
-			BoardAttach attach = new BoardAttach();
+			GalleryAttach attach = new GalleryAttach();
 			attach.setFullName(uploadPath + "/" + uploadFileName);	// 업로드 파일 전체경로
 			attach.setFileName(originalFileName);					// 파일명
 			attachList.add(attach);
@@ -343,10 +349,10 @@ public class BoardController {
 	
 	
 	// 실제 파일 삭제
-	public void deleteFiles(List<BoardAttach> deleteFileList) throws Exception {
+	public void deleteFiles(List<GalleryAttach> deleteFileList) throws Exception {
 		
 		// 해당 게시글의 첨부파일 전체 삭제
-		for (BoardAttach deleteFile : deleteFileList) {
+		for (GalleryAttach deleteFile : deleteFileList) {
 			String fullName = deleteFile.getFullName();
 			Integer fileNo = deleteFile.getFileNo();
 			
@@ -388,7 +394,7 @@ public class BoardController {
 		// 댓글 목록 조회
 		model.addAttribute("replyList", service.replyList(boardNo));
 		
-		return "subpage/board/reply/list";
+		return "subpage/gallery/reply/list";
 	}
 	
 	
@@ -413,7 +419,7 @@ public class BoardController {
 		
 		
 		
-		return "subpage/board/reply/list";
+		return "subpage/gallery/reply/list";
 	}
 	
 	// 댓글 삭제
@@ -432,7 +438,7 @@ public class BoardController {
 		// 댓글 목록 조회
 		model.addAttribute("replyList", service.replyList(boardNo));
 		
-		return "subpage/board/reply/list";
+		return "subpage/gallery/reply/list";
 	}
 	
 	
@@ -464,7 +470,7 @@ public class BoardController {
 			HttpHeaders headers = new HttpHeaders();
 			
 			in = new FileInputStream(fileName);
-//			in = new FileInputStream(uploadPath + fileName);
+//				in = new FileInputStream(uploadPath + fileName);
 			
 			if( mType != null) {
 				headers.setContentType(mType);
@@ -488,7 +494,7 @@ public class BoardController {
 	
 	// 답글 화면
 	@RequestMapping( value = "/answer", method = RequestMethod.GET)
-	public void answerForm(Model model, Board board, Principal user) throws Exception {
+	public void answerForm(Model model, Gallery gallery, Principal user) throws Exception {
 		
 		String userId = "";
 		if( user != null ) {
@@ -496,11 +502,11 @@ public class BoardController {
 			model.addAttribute("userId", userId);
 		}
 	
-		Integer boardNo = board.getGroupNo();
-		board = service.read(boardNo);
+		Integer boardNo = gallery.getGroupNo();
+		gallery = service.read(boardNo);
 		
 		// 부모글 정보 조회
-		model.addAttribute("board",  board);
+		model.addAttribute("gallery",  gallery);
 		// 파일 목록 조회
 		model.addAttribute("files", service.readFileList(boardNo) );
 		
@@ -511,13 +517,13 @@ public class BoardController {
 	
 	// 답글 쓰기 처리
 	@RequestMapping(value = "answerRegister", method = RequestMethod.POST)
-	public String answerRegister(Model model, Board board) throws Exception {
+	public String answerRegister(Model model, Gallery gallery) throws Exception {
 		log.info("답글 쓰기 처리");
-		log.info(board.toString());
+		log.info(gallery.toString());
 		
 		// [파일 업로드]
-		MultipartFile[] file = board.getFile();
-		String[] filePath = board.getFilePath();
+		MultipartFile[] file = gallery.getFile();
+		String[] filePath = gallery.getFilePath();
 		
 		// file 정보 확인
 		for (MultipartFile f : file) {
@@ -527,42 +533,21 @@ public class BoardController {
 		}
 		
 		// 파일 업로드 처리 - uploadFiles()
-		ArrayList<BoardAttach> attachList = uploadFiles(file);
+		ArrayList<GalleryAttach> attachList = uploadFiles(file);
 		
 		// 게시글 등록
-		service.answerRegister(board);
+		service.answerRegister(gallery);
 		
 		// 첨부파일 등록
-		for (BoardAttach attach : attachList) {
+		for (GalleryAttach attach : attachList) {
 			service.uploadFile(attach);
 		}
 		
 		
 		
 		model.addAttribute("msg", "등록이 완료되었습니다.");
-		return "subpage/board/success";
+		return "subpage/gallery/success";
 	}
-	
-	
-	@RequestMapping( value = "/success", method = RequestMethod.GET)
-	public void success(Model model) throws Exception {
 		
-		
-	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

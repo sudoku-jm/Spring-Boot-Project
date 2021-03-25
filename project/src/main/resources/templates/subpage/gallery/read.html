@@ -1,0 +1,356 @@
+
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{/layouts/main_template}"
+	  >
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+</head>
+
+<body>
+<div layout:fragment="content">
+<script>
+	$(document).ready(function() {
+		
+		var form = $('#board');
+		
+		
+		// 수정 버튼 클릭 이벤트
+		$('#btnModify').on('click',function(){
+			var boardNo = $("#boardNo").val();
+			
+			self.location = "modify?boardNo=" + boardNo;
+			
+			
+		});
+		
+		// 삭제 버튼 클릭 이벤트
+		$('#btnRemove').on('click',function(){
+			form.attr("action", "/subpage/board/remove");
+			form.attr("method", "post");
+			form.submit();
+		});
+
+		// 목록 버튼 클릭 이벤트
+		$('#btnList').on('click',function(){
+			self.location  = "list";
+		});
+		
+		// 댓글 등록 버튼 클릭 이벤트
+		$('#btnReplyRegister').on('click',function(){
+			var reply = $(this).closest('.reply_txt').find('textarea');
+			var reply_writer = $('#replyWriter').val(); 
+			var reply_content = reply.val();
+			var board_no = $("#boardNo").val();
+			
+			writeReply( board_no, reply_writer, reply_content );
+// 			test( board_no, reply_writer, reply_content );
+			
+		});
+		
+		
+		// 댓글 수정 버튼 클릭 이벤트
+		$('.btnReplyModify').on('click', function() {
+			var reply_list = $(this).parent();
+			reply_list.children('div').remove();
+			var reply_no = $(this).attr('data');
+			var reply_writer = reply_list.children('.replyWriter').text();
+			var reply_content = reply_list.children('.replyContent').text();
+			
+			var edtitor = "<div class='reply_modify clfix'> "
+						+ "<input type='text' name='replyWriter' class='replyWriter' value=" + reply_writer + " >"
+						+ "<textarea rows='4' cols='' class='w-100'>" + reply_content + "</textarea>"
+						+ "<button type='button' class='btn btn_reply btnReplyRegister' data='" + reply_no + "'>등록</button>"
+						+ "</div>"
+						
+			reply_list.append(edtitor);
+						
+						
+						
+			// 댓글 수정 등록
+			$('.btnReplyRegister').on('click', function() {
+				var btn = $(this);
+				var reply_no = btn.attr('data');
+				var board_no = $('#boardNo').val();
+				var reply_writer = btn.parent().children('input').val();
+				var reply_content = btn.parent().children('textarea').val();
+				
+				console.log('reply_no : ' + reply_no);
+				console.log('reply_writer : ' + reply_writer);
+				console.log('reply_content : ' + reply_content);
+				
+				updateReply( reply_no, board_no, reply_writer, reply_content );
+				
+			});
+						
+		});
+		
+		//댓글 삭제
+		$('.btnReplyRemove').on('click', function() {
+			var reply_no = $(this).attr('data');
+			var board_no = $('#boardNo').val();
+			
+			removeReply(reply_no, board_no);
+		});
+		
+		
+		
+		
+		
+		// 이미지 타입인지 확인
+		function checkImageType( fileName ){
+			var pattern = /jpg|gif|png|jpeg/i;
+			
+			return fileName.match(pattern);
+		}
+		
+		
+		// 파일 이름 확인
+		function getOriginalName( fileName ){
+			
+			var idx = fileName.indexOf("_") + 1;
+			return fileName.substr(idx);
+		}
+		
+		// 첨부파일 가져오기
+		var boardNo = [[${board.boardNo}]];
+		
+		$.getJSON("/board/getAttach/" + boardNo, function(list){
+			
+			$(list).each(function(){
+				console.log("data : " + this);
+				
+				var data = this;		// 파일 경로
+				var str = "";
+				
+				if(checkImageType(data)){
+					str = "<div><a href='/board/displayFile?fileName=" + data + "'>"
+						+ "<img src='/board/displayFile?fileName=" + data + "'/>"
+// 						+ "<img src='/board/displayFile?fileName=" + getOriginalName(data) + "'/>"
+						+ "</a></div>";
+				}
+				else{
+					str = "<div><a href='/board/displayFile?fileName=" + data + "'>" 
+						+ getOriginalName(data) + "</a>"
+						+ "</div></div>";
+				}
+			  
+				$(".attachList").append(str);
+			});
+			
+			$('.attachList').slick({
+				  slidesToShow: 1,
+				  slidesToScroll: 1,
+				  arrows: true,
+				  autoplay: true,
+				  autoplaySpeed: 2000,
+			});
+			
+			
+		});
+		
+		
+		
+	});
+	// ready (end)
+	
+	// 댓글 등록
+	function writeReply( board_no, reply_writer, reply_content ) {
+		console.log("board_no : " + board_no);
+		console.log("reply_writer : " + reply_writer);
+		console.log("reply_content : " + reply_content);
+		
+		$.ajax({
+		    url:		'replyRegister', 			//request 보낼 서버의 경로
+		    type:		'get', 										// 메소드(get, post, put 등)
+		    data:		{	
+	    					'boardNo'	: board_no,
+	    					'writer'	: reply_writer,
+	    					'content'	: reply_content
+		    			},				 				//보낼 데이터
+		    dataType : 	"text",
+		    success: function(data) {
+		        //서버로부터 정상적으로 응답이 왔을 때 실행
+		        $('#replyList').empty();
+		        $('#replyList').append(data);
+		        
+		        var userId = "[[${userId}]]";
+		        $('#replyWriter').val(userId);
+		        $('#replyContent').val('');
+		        
+		    },
+		    error: function(request,status,error) {
+		        //서버로부터 응답이 정상적으로 처리되지 못했을 때 실행
+		        alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+		        console.log("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+		    }
+		});
+		
+	}
+	
+	
+	// 댓글 수정
+	function updateReply( reply_no, board_no, reply_writer, reply_content ) {
+		
+		$.ajax({
+		    url:		'replyModify', 		//request 보낼 서버의 경로
+		    type:		'get', 						// 메소드(get, post, put 등)
+		    data:		{	
+	    					'replyNo'	: reply_no,
+	    					'boardNo'	: board_no,
+	    					'writer'	: reply_writer,
+	    					'content'	: reply_content
+		    			},				 				//보낼 데이터
+		    dataType : 	"text",
+		    success: function(data) {
+		        //서버로부터 정상적으로 응답이 왔을 때 실행
+		        $('#replyList').empty();
+		        $('#replyList').append(data);
+		        
+		        // $('.reply_modify').remove();
+		    },
+		    error: function(request,status,error) {
+		        //서버로부터 응답이 정상적으로 처리되지 못했을 때 실행
+		        alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+		        
+		    }
+		});
+		
+	}
+	
+	
+	
+	// 댓글 삭제
+	function removeReply( reply_no, board_no ) {
+		
+		$.ajax({
+		    url:		'replyRemove', 		//request 보낼 서버의 경로
+		    type:		'get', 						// 메소드(get, post, put 등)
+		    data:		{	
+	    					'replyNo'	: reply_no,
+	    					'boardNo'	: board_no
+	    					
+		    			},				 				//보낼 데이터
+		    dataType : 	"text",
+		    success: function(data) {
+		        //서버로부터 정상적으로 응답이 왔을 때 실행
+		        $('#replyList').empty();
+		        $('#replyList').append(data);
+		        
+		        // $('.reply_modify').remove();
+		    },
+		    error: function(request,status,error) {
+		        //서버로부터 응답이 정상적으로 처리되지 못했을 때 실행
+		        alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+		        
+		    }
+		});
+		
+	}
+	
+	
+</script>
+	<div class="content_wrap">
+		<h2>글 읽기</h2>
+		<div class="btn_box" style="text-align: right;">
+			<a th:href="@{|/board/read?boardNo=${board.boardNo-1}|}" class="btn">이전 글</a>
+			<a th:href="@{|/board/read?boardNo=${board.boardNo+1}|}" class="btn">다음 글</a>
+		</div>
+		<form id="board" th:object="${board}" th:action="@{remove}" method="POST">
+			<input id="boardNo" type="hidden" name="boardNo" th:field="*{boardNo}" />
+			<table class="tbl_form">
+				<colgroup>
+				<col style="width:15%">
+				<col style="width:auto;">
+				</colgroup>
+				<tr>
+					<th>제목</th>
+					<td><input type="text" name="title" th:field="*{title}" readonly="readonly" class="w-100"/></td>
+				</tr>
+				<tr>
+					<th>작성자</th>
+					<td><input type="text" name="writer" th:field="*{writer}" readonly="readonly" class="w-100"/></td>
+				</tr>
+				<tr>
+					<th class="verTop">내용</th>
+					<td><textarea name="content" th:field="*{content}" rows="20" readonly="readonly" class="w-100" ></textarea></td>
+				</tr>
+				
+				<tr>
+					<th>파일</th>
+					<td>
+						<div id="file">
+							<!-- 개별다운 -->
+							<ul class="down_list">
+								<li th:each="file : ${files}">
+									<a th:href="|/file/fileDownload?fullName=${file.fullName}&fileName=${file.fileName}|" th:text="${file.fileName}" class="file"></a>
+								</li>
+							</ul>
+							<!-- 전체다운 -->
+							<div th:if="${!#lists.isEmpty(files)}">
+								<a th:href="|/file/zipDownload?boardNo=${board.boardNo}&title=${board.title}|" class="file_all">전체 다운로드</a>
+							</div>							
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+		<!-- 썸네일 이미지 -->
+		<div style="padding: 0px 300px;">
+		<div class="attachList" style="width: 1000px; ">
+		</div>
+		</div>
+	
+		
+		
+		<!-- 댓글 목록 -->
+		<ul id="replyList" class="reply_list">
+			<li th:each=" reply : ${replyList}">
+				<span class="replyWriter" th:text="${reply.writer}"></span>
+				<span class="replyDate" th:text="${#dates.format(reply.regDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+				<th:block th:if="${reply.writer == userId}">
+					<a href="javascript:;" title="" class="btnReplyModify" th:data="${reply.replyNo}">수정</a>				
+					<a href="javascript:;" title="" class="btnReplyRemove" th:data="${reply.replyNo}">삭제</a>
+				</th:block>
+				<span class="replyContent" th:text="${reply.content}"></span>
+					
+			</li>
+		</ul><!-- //reply_list -->
+		<!-- 댓글 입력 -->
+		<div class="reply_txt" th:if="${userId == null}">
+			<span>로그인을 해야 댓글 남길 수 있습니다.</span>
+			<a th:href="@{/auth/login}">로그인</a>
+		</div>
+		<div class="reply_txt" th:if="${userId != null}">
+			<div class="top">
+				<h3>댓글</h3>
+			</div>
+			<div class="con">
+				<input type="text" name="replyWriter" th:value="${userId}" id="replyWriter" placeholder="작성자" class="writer" readonly="readonly">
+				<textarea rows="5" cols="" placeholder="댓글 입력" class="w-100" id="replyContent" ></textarea>
+				<div class="btn_area">
+					<button type="button" id="btnReplyRegister" class="btn btn_reply">등록</button>
+				</div>
+			</div>
+		</div><!-- //reply_txt -->
+		
+		<div class="btn_box">
+			<a th:href="@{|answer?groupNo=${board.boardNo}|}" id="btnAnswer" class="btn sch">답글</a>
+			<th:block th:if="${set}">
+			<button type="submit" id="btnModify" class="btn btn_rewite">수정</button>
+			<button type="submit" id="btnRemove" class="btn btn_del">삭제</button>
+			</th:block>
+			<button type="submit" id="btnList" class="btn">목록</button>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
+
+
+

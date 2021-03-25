@@ -33,7 +33,7 @@
 			$('#rowsPerPage').on('change', function() {
 				rowsPerPage = $(this).val();
 				
-				location.href = "/subpage/board/list?pageNum=" + 1
+				location.href = "/subpage/gallery/list?pageNum=" + 1
 										+ "&totalCount=" + totalCount
 										+ "&rowsPerPage=" + rowsPerPage
 										+ "&pageCount=" + pageCount
@@ -46,7 +46,7 @@
 			$('#pageCount').on('change', function() {
 				pageCount = $("#pageCount").val();
 				
-				location.href = "/subpage/board/list?pageNum=" + 1 
+				location.href = "/subpage/gallery/list?pageNum=" + 1 
 										 + "&totalCount=" + totalCount 
 										 + "&rowsPerPage=" + rowsPerPage
 										 + "&pageCount=" + pageCount
@@ -58,7 +58,7 @@
 		
 </script>
 	<div class="content_wrap">
-		<form id="board" action="success.html" th:action="@{search}" th:object="${board}" method="get">
+		<form id="board" action="success.html" th:action="@{search}" th:object="${gallery}" method="get">
 			<input type="hidden" name="pageNum" th:value="${page.pageNum}" />
 			<input type="hidden" name="rowsPerPage" th:value="${page.rowsPerPage}" />
 			<input type="hidden" name="firstPage" th:value="${page.firstPage}" />
@@ -101,6 +101,7 @@
 			
 			<table class="tbl_list">
 				<colgroup>
+				<col style="width:100px;">
 				<col style="width:60px;">
 				<col style="width:60px;">
 				<col style="width:auto;">
@@ -125,22 +126,25 @@
 						</td>
 					</tr>
 					
-					<tr th:each="board : ${list}">
-						<td th:text="${board.rowNo}"></td>
-						<td th:text="${board.boardNo}"></td>
+					<tr th:each="gallery : ${list}">
+						<td>
+							<img th:src="@{|/file/displayFile?fileName=${gallery.thumbnailPath}|}" />
+						</td>
+						<td th:text="${gallery.rowNo}"></td>
+						<td th:text="${gallery.boardNo}"></td>
 						<td class="txtl">
-							<th:block th:if="${board.boardNo} != ${board.groupNo}">
-								<th:block th:each="no : ${#numbers.sequence(1, board.depthNo)}">
+							<th:block th:if="${gallery.boardNo} != ${gallery.groupNo}">
+								<th:block th:each="no : ${#numbers.sequence(1, gallery.depthNo)}">
 									<span style="padding-left:20px;"></span>
 								</th:block>
 								<img th:src="@{/image/reply_arrow.png}" alt="reply_arrow" />
 							</th:block>
-							<a href="read.html" th:href="@{|/subpage/board/read?boardNo=${board.boardNo}|}" th:text="${board.title}" class="dotdot"></a>
+							<a href="read.html" th:href="@{|/subpage/gallery/read?boardNo=${gallery.boardNo}|}" th:text="${gallery.title}" class="dotdot"></a>
 						</td>                                           
-						<td th:text="${board.writer}"></td>
-<!-- 						<td th:text="${#dates.format(board.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td> -->
-						<td th:text="${#dates.format(board.regDate, 'yyyy-MM-dd')}"></td>
-						<td th:text="${board.view}"></td>
+						<td th:text="${gallery.writer}"></td>
+<!-- 						<td th:text="${#dates.format(gallery.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td> -->
+						<td th:text="${#dates.format(gallery.regDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${gallery.view}"></td>
 					</tr>
 				</tbody>
 			</table>
