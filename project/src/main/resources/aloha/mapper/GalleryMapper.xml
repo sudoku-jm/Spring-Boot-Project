@@ -55,12 +55,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	
-	<insert id="uploadFile" parameterType="BoardAttach">
+	<insert id="uploadFile">
 		<selectKey resultType="int" keyProperty="boardNo" order="BEFORE">
 	        SELECT MAX(board_no) FROM gallery        
 	    </selectKey>  
-		INSERT INTO gallery_attach ( full_name, file_name, board_no ) 
-					VALUES ( #{fullName}, #{fileName}, #{boardNo} )
+		INSERT INTO gallery_attach ( full_name, file_name, board_no, category ) 
+					VALUES ( #{fullName}, #{fileName}, #{boardNo}, #{category} )
 	</insert>
 	
 	
@@ -116,9 +116,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					FROM dual
 				 ) tmp
 				 ,gallery g
-				 ,gallery_attach thumbnail
-			WHERE g.board_no = thumbnail.board_no
-			  AND thumbnail.category = 'thumbnail'
+				  LEFT JOIN ( SELECT * FROM gallery_attach WHERE category = "thumbnail" ) thumbnail
+				  ON g.board_no = thumbnail.board_no
 			ORDER BY board_no DESC, 
 			 		 reg_date DESC	
 			LIMIT #{startRowIndex}, #{rowsPerPage}		

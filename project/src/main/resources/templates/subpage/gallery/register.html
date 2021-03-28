@@ -37,7 +37,7 @@
 
 	<div class="content_wrap">
 		<h2>글 쓰기</h2>
-		<form id="board" action="success.html" th:action="@{register}" th:object="${board}" method="POST" enctype="multipart/form-data">
+		<form id="board" action="success.html" th:action="@{register}" th:object="${gallery}" method="POST" enctype="multipart/form-data">
 			<table class="tbl_form">
 			<colgroup>
 			<col style="width:15%">
@@ -56,6 +56,10 @@
 					<td><textarea name="content" th:field="*{content}" rows="20" class="w-100"></textarea></td>
 				</tr>
 				<tr>
+					<th>썸네일</th>
+					<td><input type="file" name="thumbnail" class="w-100" accept="image/*" /></td>
+				</tr>
+				<tr>
 					<th>파일</th>
 					<td><input type="file" name="file" multiple="multiple" class="w-100" /></td>
 				</tr>
@@ -71,3 +75,4 @@
 	
 </body>
 </html>
+

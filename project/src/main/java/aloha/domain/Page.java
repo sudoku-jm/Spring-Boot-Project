@@ -19,7 +19,7 @@ public class Page {
 	private int pageCount = 10;		// 한 번에 보여질 페이지 최대 개수
 	private int totalCount;			// 전체 데이터 개수
 	
-	private int startRowNum;		// 시작 행 번호
+	private int startRowIndex;		// 시작 행 index
 	
 	private String keyword;			// 검색어
 	
@@ -46,7 +46,7 @@ public class Page {
 		this.prev = pageNum - 1;
 		this.next = pageNum + 1;
 		
-		this.startRowNum = (pageNum - 1) * rowsPerPage;
+		this.startRowIndex = (pageNum - 1) * rowsPerPage;
 		
 		this.firstPage = 1;
 		

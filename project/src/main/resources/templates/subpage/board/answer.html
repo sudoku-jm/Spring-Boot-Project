@@ -1,12 +1,16 @@
-<!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{/layouts/main_template}"
+	  >
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="/css/reset.css">
-<link rel="stylesheet" href="/css/style.css">
+
 </head>
-<script src="/js/jquery-3.5.1.min.js"></script>
+<body>
+<div layout:fragment="content">
 
 <script>
 	$(document).ready(function() {
@@ -26,7 +30,6 @@
 		
 	});
 </script>
-<body>
 	<div class="colum_wrap clfix">
 		<div class="col_row">
 			<h2>원본 게시글</h2>
@@ -106,6 +109,6 @@
 		<button type="submit" id="btnRegister" class="btn btn_submit">등록</button>
 		<button type="submit" id="btnList" class="btn btn_list">목록</button>
 	</div>
-		
+</div>
 </body>
 </html>

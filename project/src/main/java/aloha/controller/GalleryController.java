@@ -71,34 +71,34 @@ public class GalleryController {
 			totalCount = page.getTotalCount();
 		
 		log.info("totalCount : " + totalCount);
-//		
-//		// 페이지 당 노출 게시글 수
-//		if( page.getRowsPerPage() == 0 ) 
-//			rowsPerPage = 10;
-//		else
-//			rowsPerPage = page.getRowsPerPage();
-//		
-//		// 노출 페이지 수
-//		if( page.getPageCount() == 0 )
-//			pageCount = 10;
-//		else
-//			pageCount = page.getPageCount();
-//			
-//		
-//		if( page.getPageNum() == 0 ) {
-//			page = new Page(1, rowsPerPage, totalCount, pageCount);
-//		} else {
-//			page = new Page(pageNum, rowsPerPage, totalCount, pageCount);
-//		}
-//		
-//		
-//		if( keyword == null || keyword == "" ) {
-//			page.setKeyword("");
-//			model.addAttribute("list", service.list(page));
-//		} else {
-//			page.setKeyword(keyword);
-//			model.addAttribute("list", service.search(page));
-//		}
+		
+		// 페이지 당 노출 게시글 수
+		if( page.getRowsPerPage() == 0 ) 
+			rowsPerPage = 10;
+		else
+			rowsPerPage = page.getRowsPerPage();
+		
+		// 노출 페이지 수
+		if( page.getPageCount() == 0 )
+			pageCount = 10;
+		else
+			pageCount = page.getPageCount();
+			
+		
+		if( page.getPageNum() == 0 ) {
+			page = new Page(1, rowsPerPage, totalCount, pageCount);
+		} else {
+			page = new Page(pageNum, rowsPerPage, totalCount, pageCount);
+		}
+		
+		
+		if( keyword == null || keyword == "" ) {
+			page.setKeyword("");
+			model.addAttribute("list", service.list(page));
+		} else {
+			page.setKeyword(keyword);
+			model.addAttribute("list", service.search(page));
+		}
 		
 		
 		model.addAttribute("page", page);
@@ -123,7 +123,7 @@ public class GalleryController {
 	public String register(Model model, Gallery gallery) throws Exception {
 		// [파일 업로드]
 		MultipartFile[] file = gallery.getFile();
-		String[] filePath = gallery.getFilePath();
+//		String[] filePath = gallery.getFilePath();
 		
 		// file 정보 확인
 		for (MultipartFile f : file) {
@@ -134,6 +134,19 @@ public class GalleryController {
 		
 		// 파일 업로드 처리 - uploadFiles()
 		ArrayList<GalleryAttach> attachList = uploadFiles(file);
+		
+		// [썸네일 정보]
+		MultipartFile thumbnail = gallery.getThumbnail();
+//		String thumbnailPath = gallery.getThumbnailPath();
+		// thumbnail 정보 확인
+		log.info("#### [썸네일] ####");
+		log.info("originalName : " + thumbnail.getOriginalFilename());
+		log.info("size : " + thumbnail.getSize());
+		log.info("contentType : " + thumbnail.getContentType());
+		
+		GalleryAttach thumbnailAttach = uploadFile(thumbnail);
+		thumbnailAttach.setCategory("thumbnail");
+		attachList.add(thumbnailAttach);
 		
 		// 게시글 등록
 		service.register(gallery);
@@ -309,9 +322,40 @@ public class GalleryController {
 		return "subpage/gallery/list";
 	}
 	
+	// 단일 파일 업로드 
+	private GalleryAttach uploadFile(MultipartFile file) throws IOException {
+		
+		// 업로드 경로에 파일 복사
+		// 파일 존재여부 확인
+		if( file.isEmpty() ) {
+			return null;
+		}
+		
+		// 파일명 중복 방지를 위한 고유 ID 생성
+		UUID uid = UUID.randomUUID();
+		
+		// 실제 원본 파일 이름
+		String originalFileName =  file.getOriginalFilename();
+		
+		// UID_강아지.png
+		String uploadFileName = uid.toString() + "_" + originalFileName;
+		
+		// 업로드 폴더에 업로드할 파일 복사 (upload)
+		byte[] fileData = file.getBytes();
+		File target = new File(uploadPath, uploadFileName);
+		FileCopyUtils.copy(fileData, target);
+			
+		GalleryAttach attach = new GalleryAttach();
+		attach.setFullName(uploadPath + "/" + uploadFileName);	// 업로드 파일 전체경로
+		attach.setFileName(originalFileName);					// 파일명
+		attach.setCategory(file.getContentType());              // 카테고리(파일종류)
+		
+		return attach;
+	}
 	
 	
-	// 파일 업로드 
+	
+	// 다중 파일 업로드 
 	private ArrayList<GalleryAttach> uploadFiles(MultipartFile[] files) throws IOException {
 		
 		ArrayList<GalleryAttach> attachList = new ArrayList<GalleryAttach>();
@@ -340,6 +384,7 @@ public class GalleryController {
 			GalleryAttach attach = new GalleryAttach();
 			attach.setFullName(uploadPath + "/" + uploadFileName);	// 업로드 파일 전체경로
 			attach.setFileName(originalFileName);					// 파일명
+			attach.setCategory(file.getContentType());				// 카테고리(파일종류)
 			attachList.add(attach);
 			
 		}

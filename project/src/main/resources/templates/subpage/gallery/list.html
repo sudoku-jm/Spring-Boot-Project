@@ -102,33 +102,36 @@
 			<table class="tbl_list">
 				<colgroup>
 				<col style="width:100px;">
-				<col style="width:60px;">
+				<col style="width:100px;">
 				<col style="width:60px;">
 				<col style="width:auto;">
 				<col style="width:100px">
 				<col style="width:150px;">
 				<col style="width:100px">
+
 				</colgroup>
 				<thead>	
 					<tr>
+						<th></th>
 						<th>행번호</th>
 						<th>글번호</th>
 						<th class="txtl">제목</th>
 						<th>작성자</th>
 						<th>등록일자</th>
 						<th>조회수</th>
+
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:if="${#lists.isEmpty(list)}">
-						<td colspan="4">
+						<td colspan="7">
 							조회된 데이터가 없습니다.
 						</td>
 					</tr>
 					
 					<tr th:each="gallery : ${list}">
 						<td>
-							<img th:src="@{|/file/displayFile?fileName=${gallery.thumbnailPath}|}" />
+							<img th:src="@{|/file/displayFile?fileName=${gallery.thumbnailPath}|}" width="100" />
 						</td>
 						<td th:text="${gallery.rowNo}"></td>
 						<td th:text="${gallery.boardNo}"></td>

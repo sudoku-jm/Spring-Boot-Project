@@ -25,6 +25,12 @@ public class GalleryServiceImpl implements GalleryService {
 	@Override
 	public void register(Gallery gallery) throws Exception {
 		mapper.create(gallery);
+		
+		int boardNo = mapper.maxBoardNo();
+		gallery.setGroupNo(boardNo);
+		gallery.setBoardNo(boardNo);
+		
+		mapper.updateGroupNo(gallery);
 	}
 
 	@Override
@@ -53,8 +59,7 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public void uploadFile(GalleryAttach attach) throws Exception {
-		// TODO Auto-generated method stub
-		
+		mapper.uploadFile(attach);
 	}
 
 	@Override
@@ -83,14 +88,12 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public Integer totalCount() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.totalCount();
 	}
 
 	@Override
 	public Integer totalCount(String keyword) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.totalCountByKeyword(keyword);
 	}
 
 	@Override

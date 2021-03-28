@@ -77,7 +77,7 @@ public interface GalleryMapper {
 	public void updateGroupNo(Gallery board) throws Exception;
 	
 	// max(글번호)
-	public int maxGalleryNo() throws Exception;
+	public int maxBoardNo() throws Exception;
 	
 	
 	// 답글 쓰기

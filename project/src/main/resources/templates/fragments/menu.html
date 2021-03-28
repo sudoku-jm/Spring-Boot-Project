@@ -14,9 +14,10 @@
 				<th:block sec:authorize="hasRole('ROLE_ADMIN')">
 					<li><a href="#" th:href="@{/}">관리자 게시판</a></li>
 				</th:block>
-							<!-- 회원 권한 메뉴 -->
+				<!-- 회원 권한 메뉴 -->
 				<th:block sec:authorize="hasRole('ROLE_USER')">
-					<li><a href="#" th:href="@{/subpage/board/list}">회원 게시판</a></li>
+					<li><a href="#" th:href="@{/subpage/board/list}">게시판</a></li>				
+					<li><a href="#" th:href="@{/subpage/gallery/list}">갤러리</a></li>
 				</th:block>
 			</th:block>			
 		</ul>
