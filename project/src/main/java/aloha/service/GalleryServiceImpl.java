@@ -104,24 +104,23 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public void replyRegister(Reply reply) throws Exception {
-		// TODO Auto-generated method stub
+		mapper.replyCreate(reply);
 		
 	}
 
 	@Override
 	public List<Reply> replyList(Integer boardNo) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.replyList(boardNo);
 	}
 
 	@Override
 	public void replyModify(Reply reply) throws Exception {
-		mapper.replyCreate(reply);
+		mapper.replyUpdate(reply);
 	}
 
 	@Override
 	public void replyRemove(Integer reply_no) throws Exception {
-		// TODO Auto-generated method stub
+		mapper.replyDelete(reply_no);
 		
 	}
 
