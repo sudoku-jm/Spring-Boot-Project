@@ -256,8 +256,8 @@
 	<div class="content_wrap">
 		<h2>글 읽기</h2>
 		<div class="btn_box" style="text-align: right;">
-			<a th:href="@{|/board/read?boardNo=${board.boardNo-1}|}" class="btn">이전 글</a>
-			<a th:href="@{|/board/read?boardNo=${board.boardNo+1}|}" class="btn">다음 글</a>
+			<a th:href="@{|read?boardNo=${board.boardNo-1}|}" class="btn">이전 글</a>
+			<a th:href="@{|read?boardNo=${board.boardNo+1}|}" class="btn">다음 글</a>
 		</div>
 		<form id="board" th:object="${board}" th:action="@{remove}" method="POST">
 			<input id="boardNo" type="hidden" name="boardNo" th:field="*{boardNo}" />

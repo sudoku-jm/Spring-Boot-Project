@@ -17,14 +17,14 @@
 		
 		// 수정 버튼 클릭 이벤트
 		$('#btnModify').on('click',function(){
-			form.attr("action", "/subpage/board/modify");
+			form.attr("action", "/subpage/gallery/modify");
 			form.attr("method", "post");
 			form.submit();
 		});
 		
 		// 삭제 버튼 클릭 이벤트
 		$('#btnRemove').on('click',function(){
-			form.attr("action", "/subpage/board/remove");
+			form.attr("action", "/subpage/gallery/remove");
 			form.attr("method", "post");
 			form.submit();
 		});
@@ -77,7 +77,7 @@
 </script>
 	<div class="content_wrap">
 		<h2>글 수정</h2>
-		<form id="board" th:object="${board}" method="POST" enctype="multipart/form-data" th:action="@{modify}">
+		<form id="board" th:object="${gallery}" method="POST" enctype="multipart/form-data" th:action="@{modify}">
 			<input id="boardNo" type="hidden" name="boardNo" th:field="*{boardNo}" />
 			<table class="tbl_form">
 				<colgroup>

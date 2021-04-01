@@ -35,7 +35,7 @@
 	<div class="colum_wrap clfix">
 		<div class="col_row">
 			<h2>원본 게시글</h2>
-			<form id="read" th:object="${board}" method="POST">
+			<form id="read" th:object="${gallery}" method="POST">
 				<input id="boardNo" type="hidden" name="boardNo" th:field="*{boardNo}" />
 				<table class="tbl_form">
 					<colgroup>
@@ -67,7 +67,7 @@
 								</ul>
 								<!-- 전체다운 -->
 								<div th:if="${!#lists.isEmpty(files)}">
-									<a th:href="|/file/zipDownload?boardNo=${board.boardNo}&title=${board.title}|" class="file_all">전체 다운로드</a>
+									<a th:href="|/file/zipDownload?boardNo=${gallery.boardNo}&title=${gallery.title}|" class="file_all">전체 다운로드</a>
 								</div>							
 							</div>
 						</td>
@@ -77,7 +77,7 @@
 		</div>
 		<div class="col_row">
 			<h2>답글쓰기</h2>
-			<form id="board" th:object="${board}" th:action="@{answerRegister}" method="POST" enctype="multipart/form-data">
+			<form id="board" th:object="${gallery}" th:action="@{answerRegister}" method="POST" enctype="multipart/form-data">
 				<input id="boardNo" type="hidden" name="boardNo" th:field="*{boardNo}" />	<!-- 부모글의 글 번호 -->
 				<input id="groupNo" type="hidden" name="groupNo" th:field="*{groupNo}" />	<!-- 부모글의 그룹 번호 -->
 				<input id="seqNo" type="hidden" name="seqNo" th:field="*{seqNo}" />			<!-- 부모글의 순서 번호 -->

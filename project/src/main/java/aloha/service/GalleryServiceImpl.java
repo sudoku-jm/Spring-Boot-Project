@@ -35,26 +35,23 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public Gallery read(Integer boardNo) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.read(boardNo);
 	}
 
 	@Override
 	public void modify(Gallery gallery) throws Exception {
-		// TODO Auto-generated method stub
-		
+		mapper.update(gallery);
 	}
 
 	@Override
 	public void remove(Integer boardNo) throws Exception {
-		// TODO Auto-generated method stub
+		mapper.delete(boardNo);
 		
 	}
 
 	@Override
 	public List<Gallery> search(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.search(keyword);
 	}
 
 	@Override
@@ -70,8 +67,7 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public List<GalleryAttach> readFileList(Integer boardNo) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.readFileList(boardNo);
 	}
 
 	@Override
@@ -103,8 +99,7 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public List<Gallery> search(Page page) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.searchWithPage(page);
 	}
 
 	@Override
@@ -121,8 +116,7 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public void replyModify(Reply reply) throws Exception {
-		// TODO Auto-generated method stub
-		
+		mapper.replyCreate(reply);
 	}
 
 	@Override
@@ -133,8 +127,7 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public List<String> getAttach(Integer boardNo) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.getAttach(boardNo);
 	}
 
 	@Override
@@ -145,14 +138,25 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public void answerRegister(Gallery gallery) throws Exception {
-		// TODO Auto-generated method stub
+		// 계층번호
+		int depthNo = mapper.readDepthNo(gallery.getBoardNo());
+		// 계층번호 = 부모글의 계층번호 + 1
+		gallery.setDepthNo(depthNo+1);
 		
+		
+		// 부모글이 답글인 경우
+		if( gallery.getSeqNo() == 0 ) {
+			// 순서번호의 MAX
+			int maxSeqNo = mapper.maxSeqNo();
+			gallery.setSeqNo(maxSeqNo+1);
+		}
+		
+		mapper.answerCreate(gallery);
 	}
 
 	@Override
 	public int countAnswer(Integer groupNo) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		return mapper.countAnswer(groupNo);
 	}
 
 	@Override
@@ -175,8 +179,7 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public void view(Integer boardNo) throws Exception {
-		// TODO Auto-generated method stub
-		
+		mapper.view(boardNo);
 	}
 
 }

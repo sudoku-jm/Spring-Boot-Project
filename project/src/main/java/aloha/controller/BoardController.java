@@ -145,22 +145,24 @@ public class BoardController {
 	@RequestMapping( value = "/read", method = RequestMethod.GET)
 	public String read(Model model, Integer boardNo, Principal user) throws Exception {
 		
+		Board board = service.read(boardNo);
+		if( board == null ) {
+			model.addAttribute("msg", "조회할 수 없는 게시글입니다.");
+			return "subpage/board/empty";
+		}
+		
 		// 로그인 id == 작성자 id 
 		String userId = "";
 		if( user != null ) {
 			userId = user.getName();
 			model.addAttribute("userId", userId);
 		}
-		Board board = service.read(boardNo);
+		
 		String writerId = board.getWriter();
 		if( writerId.equals(userId) ) {
 			model.addAttribute("set", true);//작성자일 경우만 수정,삭제 노출
 		}
 		
-		if( board == null ) {
-			model.addAttribute("msg", "조회할 수 없는 게시글입니다.");
-			return "subpage/board/empty";
-		}
 		
 		// 조회 수 증가
 		service.view(boardNo);

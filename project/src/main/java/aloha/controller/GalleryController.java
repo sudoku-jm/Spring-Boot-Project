@@ -144,9 +144,14 @@ public class GalleryController {
 		log.info("size : " + thumbnail.getSize());
 		log.info("contentType : " + thumbnail.getContentType());
 		
-		GalleryAttach thumbnailAttach = uploadFile(thumbnail);
-		thumbnailAttach.setCategory("thumbnail");
-		attachList.add(thumbnailAttach);
+		// 썸네일이 있으면 추가
+		if( !thumbnail.isEmpty() ) {
+			GalleryAttach thumbnailAttach = uploadFile(thumbnail);
+			thumbnailAttach.setCategory("thumbnail");
+			attachList.add(thumbnailAttach);
+		} else {
+			// 기본 이미지?
+		}
 		
 		// 게시글 등록
 		service.register(gallery);
@@ -164,26 +169,27 @@ public class GalleryController {
 	@RequestMapping( value = "/read", method = RequestMethod.GET)
 	public String read(Model model, Integer boardNo, Principal user) throws Exception {
 		
+		Gallery gallery = service.read(boardNo);
+		
+		if( gallery == null ) {
+			model.addAttribute("msg", "조회할 수 없는 게시글입니다.");
+			return "subpage/gallery/empty";
+		} 
+			
 		// 로그인 id == 작성자 id 
 		String userId = "";
 		if( user != null ) {
 			userId = user.getName();
 			model.addAttribute("userId", userId);
 		}
-		Gallery gallery = service.read(boardNo);
+		
 		String writerId = gallery.getWriter();
 		if( writerId.equals(userId) ) {
 			model.addAttribute("set", true);//작성자일 경우만 수정,삭제 노출
 		}
 		
-		if( gallery == null ) {
-			model.addAttribute("msg", "조회할 수 없는 게시글입니다.");
-			return "subpage/gallery/empty";
-		}
-		
 		// 조회 수 증가
 		service.view(boardNo);
-		
 				
 		model.addAttribute("gallery", gallery );
 		// 파일 목록 조회
@@ -262,7 +268,7 @@ public class GalleryController {
 	
 	// 게시글 삭제 처리
 	@RequestMapping( value = "/remove", method = RequestMethod.POST)
-	public String remove(Model model,Integer boardNo) throws Exception{
+	public String remove(Model model, Integer boardNo) throws Exception{
 		List<GalleryAttach> attachList =  service.readFileList(boardNo);
 		
 		// 게시글에 첨부한 파일 삭제
@@ -538,6 +544,7 @@ public class GalleryController {
 
 	
 	// 답글 화면
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping( value = "/answer", method = RequestMethod.GET)
 	public void answerForm(Model model, Gallery gallery, Principal user) throws Exception {
 		
@@ -561,7 +568,7 @@ public class GalleryController {
 	
 	
 	// 답글 쓰기 처리
-	@RequestMapping(value = "answerRegister", method = RequestMethod.POST)
+	@RequestMapping(value = "/answerRegister", method = RequestMethod.POST)
 	public String answerRegister(Model model, Gallery gallery) throws Exception {
 		log.info("답글 쓰기 처리");
 		log.info(gallery.toString());

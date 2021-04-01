@@ -5,20 +5,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="aloha.mapper.GalleryMapper">
 
-	<insert id="create" parameterType="Board">
+	<insert id="create" >
 		INSERT INTO gallery( title, content, writer ) 
 			VALUES ( #{title}, #{content}, #{writer} )
 	</insert>
 	
 	
-	<select id="read" resultType="Board">
+	<select id="read" resultType="Gallery">
 		SELECT * 
 		FROM gallery
 		WHERE board_no = #{boardNo}
 	</select>
 
 
-	<update id="update" parameterType="Board">
+	<update id="update" >
 		UPDATE gallery
 		SET   title = #{title}
 		     ,content = #{content}
@@ -32,11 +32,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE board_no = #{boardNo}
 	</delete>
 	
-	<select id="searchWithPage" resultType="Board">
+	<select id="searchWithPage" resultType="Gallery">
 		<![CDATA[
 			SELECT  @rownum := @rownum+1 row_no, b.*
 			FROM ( 
-					SELECT @rownum := #{startRowNum} 
+					SELECT @rownum := #{startRowIndex} 
 					FROM dual
 				 ) tmp
 				 ,gallery b
@@ -50,7 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			        ,seq_no ASC
 			        ,depth_no ASC
 			        ,reg_date DESC
-			LIMIT #{startRowNum}, #{rowsPerPage}
+			LIMIT #{startRowIndex}, #{rowsPerPage}
 		]]>
 	</select>
 	
@@ -64,19 +64,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 	
 	
-	<insert id="uploadUpdateFile" parameterType="BoardAttach">
+	<insert id="uploadUpdateFile" parameterType="GalleryAttach">
 		INSERT INTO gallery_attach ( full_name, file_name, board_no ) 
 					VALUES ( #{fullName}, #{fileName}, #{boardNo} )
 	</insert>
 
 
-	<select id="readFileList" resultType="BoardAttach">
+	<select id="readFileList" resultType="GalleryAttach">
 		SELECT * 
 		FROM gallery_attach
 		WHERE board_no = #{boardNo}
 	</select>
 
-	<select id="readFile" resultType="BoardAttach">
+	<select id="readFile" resultType="GalleryAttach">
 		SELECT * 
 		FROM gallery_attach
 		WHERE file_no = #{fileNo}
@@ -118,8 +118,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				 ,gallery g
 				  LEFT JOIN ( SELECT * FROM gallery_attach WHERE category = "thumbnail" ) thumbnail
 				  ON g.board_no = thumbnail.board_no
-			ORDER BY board_no DESC, 
-			 		 reg_date DESC	
+			ORDER BY group_no DESC
+			        ,seq_no ASC
+			        ,depth_no ASC
+			        ,reg_date DESC
 			LIMIT #{startRowIndex}, #{rowsPerPage}		
 		]]>
 	</select>

@@ -17,13 +17,13 @@ public interface GalleryMapper {
 	public List<Gallery> list() throws Exception;
 	
 	// 게시글 쓰기
-	public void create(Gallery board) throws Exception;
+	public void create(Gallery gallery) throws Exception;
 	
 	// 게시글 읽기
 	public Gallery read(Integer boardNo) throws Exception;
 	
 	// 게시글 수정
-	public void update(Gallery board) throws Exception;
+	public void update(Gallery gallery) throws Exception;
 	
 	// 게시글 삭제
 	public void delete(Integer boardNo) throws Exception;
@@ -74,14 +74,14 @@ public interface GalleryMapper {
 	public List<String> getAttach(Integer boardNo) throws Exception;
 		
 	// 그룹번호 수정
-	public void updateGroupNo(Gallery board) throws Exception;
+	public void updateGroupNo(Gallery gallery) throws Exception;
 	
 	// max(글번호)
 	public int maxBoardNo() throws Exception;
 	
 	
 	// 답글 쓰기
-	public void answerCreate(Gallery board) throws Exception;
+	public void answerCreate(Gallery gallery) throws Exception;
 	
 	// 계층번호 조회
 	public int readDepthNo(Integer boardNo) throws Exception;
