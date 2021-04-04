@@ -32,7 +32,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import aloha.domain.BoardAttach;
+import aloha.domain.FileAttach;
 import aloha.service.BoardService;
+import aloha.service.FileService;
 import aloha.util.MediaUtils;
 
 @Controller
@@ -45,6 +47,9 @@ public class FileController {
 	
 	@Autowired
 	private BoardService service;
+	
+	@Autowired
+	private FileService fileService;
 	
 	@RequestMapping(value = "/fileDownload", method = RequestMethod.GET )
 	public void fileDownload(HttpServletResponse response, HttpServletRequest request, @RequestParam Map<String,String> paramMap) {
@@ -182,9 +187,12 @@ public class FileController {
  	}
 	
 	@RequestMapping(value = "/deleteFile", method = RequestMethod.GET)
-	public String deleteFile(Integer fileNo, String fullName) throws Exception {
+	public String deleteFile(FileAttach fileAttach) throws Exception {
 		
+		
+		log.info(fileAttach + "");
 		// 파일 삭제
+		String fullName = fileAttach.getFullName();
 		File file = new File(fullName);
 		
 		// 실제로 파일이 존재하는 확인
@@ -201,8 +209,9 @@ public class FileController {
 			log.info("파일이 존재하지 않습니다.");
 		}
 		
+//		service.deleteFile(fileNo);
+		fileService.deleteFile(fileAttach);
 		
-		service.deleteFile(fileNo);
 		
 		return "subpage/board/success";
 	}

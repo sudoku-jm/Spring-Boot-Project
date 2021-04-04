@@ -90,4 +90,7 @@ public interface GalleryService {
 	// 조회수 증가
 	public void view(Integer boardNo) throws Exception;
 	
+	// 썸네일 가져오기
+	public GalleryAttach readThumbnail(Integer boardNo) throws Exception;
+	
 }

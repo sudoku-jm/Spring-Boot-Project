@@ -219,6 +219,7 @@ public class GalleryController {
 		
 		model.addAttribute( gallery );
 		model.addAttribute("files", service.readFileList(boardNo) );
+		model.addAttribute("thumbnail", service.readThumbnail(boardNo));
 		
 		return "subpage/gallery/modify";
 	}
@@ -227,6 +228,8 @@ public class GalleryController {
 	// 게시글 수정 처리
 	@PostMapping("/modify")
 	public String modify(Model model, Gallery gallery, Integer[] deleteNo) throws Exception {
+		Integer boardNo = gallery.getBoardNo();
+		
 		// 선택한 파일 DB에서 삭제
 		ArrayList<GalleryAttach> deleteFileList = new ArrayList<GalleryAttach>(); 
 		// 삭제번호를 클릭한 경우에만 반복
@@ -253,6 +256,35 @@ public class GalleryController {
 		
 		// 파일 업로드 처리 - uploadFiles()
 		ArrayList<GalleryAttach> attachList = uploadFiles(file);
+		
+		
+		// [썸네일 정보]
+		MultipartFile thumbnail = gallery.getThumbnail();
+		
+		// thumbnail 정보 확인
+		log.info("#### [썸네일] ####");
+		log.info("originalName : " + thumbnail.getOriginalFilename());
+		log.info("size : " + thumbnail.getSize());
+		log.info("contentType : " + thumbnail.getContentType());
+		
+		// 썸네일이 있으면 추가
+		if( !thumbnail.isEmpty() ) {
+			// 기존 썸네일이 있으면 삭제
+			GalleryAttach oldThumbnail = service.readThumbnail(boardNo);
+			if( oldThumbnail != null ) {
+				deleteFile(oldThumbnail);
+				
+				service.deleteFile(oldThumbnail.getFileNo());
+			}
+			
+			// 새 썸네일 추가
+			GalleryAttach thumbnailAttach = uploadFile(thumbnail);
+			thumbnailAttach.setCategory("thumbnail");
+			attachList.add(thumbnailAttach);
+			
+		} else {
+			// 기본 이미지?
+		}
 		
 		service.modify(gallery);
 		
@@ -399,7 +431,36 @@ public class GalleryController {
 	}
 	
 	
-	// 실제 파일 삭제
+	// 단일 파일 삭제
+	public void deleteFile(GalleryAttach deleteFile) throws Exception {
+		
+		// 해당 게시글의 첨부파일 전체 삭제
+		String fullName = deleteFile.getFullName();
+		Integer fileNo = deleteFile.getFileNo();
+		
+		File file = new File(fullName);
+		// 실제로 파일이 존재하는 확인
+		if(file.exists()) {
+			// 파일 삭제
+			if(file.delete()) {
+				log.info("삭제한 파일 : " + fullName);
+				log.info("파일삭제 성공");
+				
+				// DB에서 해당 파일 데이터 삭제 
+				service.deleteFile(fileNo);
+			} else {
+				log.info("파일삭제 실패");
+				
+			}
+		} else {
+			log.info("삭제(실패) : " + fullName);
+			log.info("파일이 존재하지 않습니다.");
+		}
+		
+	}
+	
+	
+	// 다중 파일 삭제
 	public void deleteFiles(List<GalleryAttach> deleteFileList) throws Exception {
 		
 		// 해당 게시글의 첨부파일 전체 삭제

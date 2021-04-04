@@ -54,6 +54,7 @@
 		    url:		'/file/deleteFile', 			//request 보낼 서버의 경로
 		    type:		'get', 						// 메소드(get, post, put 등)
 		    data:		{	
+		    				'table'		:"gallery_attach",
 	    					'fileNo'	:fileNo,
 	    					'fullName'	:fullName
 		    			},				 				//보낼 데이터
@@ -97,7 +98,7 @@
 					<td><textarea name="content" th:field="*{content}" rows="20" class="w-100" ></textarea></td>
 				</tr>
 				<tr>
-					<th>파일</th>
+					<th>첨부파일</th>
 					<td>
 						<div id="file">
 							<ul class="down_list">
@@ -111,7 +112,19 @@
 					</td>
 				</tr>
 				<tr>
-					<th></th>
+					<th>썸네일</th>
+					<td>
+						<div th:if="${ thumbnail != null }">
+							<a th:href="|/file/displayFile?fileName=${thumbnail.fullName}|">
+								<img th:src="|/file/displayFile?fileName=${thumbnail.fullName}|" width="300" />
+							</a>
+							<span th:data="${thumbnail.fileNo}" th:path="${thumbnail.fullName}" class="btnDelete cursorP"><img src="/image/x-button.png" alt="cancel" /></span>
+						</div>
+						<span>수정</span><input type="file" name="thumbnail" class="" accept="image/*" />
+					</td>
+				</tr>
+				<tr>
+					<th>파일</th>
 					<td><input type="file" name="file" multiple="multiple" class="w-100" /></td>
 				</tr>
 			</table>

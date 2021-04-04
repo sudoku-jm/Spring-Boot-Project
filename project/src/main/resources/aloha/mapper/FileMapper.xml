@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="aloha.mapper.FileMapper">
+
+	<delete id="deleteFile">
+		DELETE FROM ${table}
+		WHERE file_no = #{fileNo}
+	</delete>
+
+
+
+</mapper>

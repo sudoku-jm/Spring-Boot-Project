@@ -61,8 +61,7 @@ public class GalleryServiceImpl implements GalleryService {
 
 	@Override
 	public void uploadModifyFile(GalleryAttach attach) throws Exception {
-		// TODO Auto-generated method stub
-		
+		mapper.uploadUpdateFile(attach);
 	}
 
 	@Override
@@ -181,4 +180,10 @@ public class GalleryServiceImpl implements GalleryService {
 		mapper.view(boardNo);
 	}
 
+	@Override
+	public GalleryAttach readThumbnail(Integer boardNo) throws Exception {
+		return mapper.readThumbnail(boardNo);
+	}
+
+	
 }

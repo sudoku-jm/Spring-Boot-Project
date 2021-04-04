@@ -65,8 +65,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	
 	<insert id="uploadUpdateFile" parameterType="GalleryAttach">
-		INSERT INTO gallery_attach ( full_name, file_name, board_no ) 
-					VALUES ( #{fullName}, #{fileName}, #{boardNo} )
+		INSERT INTO gallery_attach ( full_name, file_name, category, board_no ) 
+					VALUES ( #{fullName}, #{fileName}, #{category}, #{boardNo} )
 	</insert>
 
 
@@ -74,6 +74,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * 
 		FROM gallery_attach
 		WHERE board_no = #{boardNo}
+		 AND category != 'thumbnail'
+	</select>
+	
+	<select id="readThumbnail" resultType="GalleryAttach">
+		SELECT * 
+		FROM gallery_attach
+		WHERE board_no = #{boardNo}
+		 AND category = 'thumbnail'
 	</select>
 
 	<select id="readFile" resultType="GalleryAttach">
