@@ -13,13 +13,15 @@
 		<h1>ALOHA CAMPUS</h1>
 		<p th:text="${serverTime}">시간 표시</p>
 		
-		<ul sec:authorize="!isAuthenticated()">
-			<li><a th:href="@{/user/register}">회원가입</a></li>
-			<li><a th:href="@{/auth/login}">로그인</a></li>
-		</ul>
+		<div class="btn_box">
+			<ul sec:authorize="!isAuthenticated()" class="clfix">
+				<li><a th:href="@{/user/register}" class="btn btn_black">회원가입</a></li>
+				<li><a th:href="@{/auth/login}" class="btn btn_login">로그인</a></li>
+			</ul>
+		</div>
 		<ul sec:authorize="isAuthenticated()">
 			<li><span sec:authentication="principal.username">유저이름</span>님</li>
-			<li><a th:href="@{/auth/logout}">로그아웃</a></li>
+			<li><a th:href="@{/auth/logout}" class="btn btn_black">로그아웃</a></li>
 		</ul>
 	</div>
 </div>

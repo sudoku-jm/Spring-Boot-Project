@@ -21,11 +21,15 @@ header .top .user_name em{font-weight:700;}
 .btn_black{background:#444;color:#fff;}
 .btn.sch{margin:0 0 0 5px;background:#3580ff;color:#fff;}
 .btn_del{background:#c9161e;color:#fff;border-color:#c9161e;}
-.btn_submit{background:#4f3aff;color:#fff;border-color:#3580ff;}
+.btn_submit,.btn_login{background:#4f3aff;color:#fff;border-color:#3580ff;}
 .btn_rewite{background:#555;color:#fff;border-color:#555;}
 .btn_list{background:#fff;color:#555;}
 .btn_box{margin-top:20px;text-align:center}
+.btn_box li{display:inline-block;}
 .btn_box button{margin:0 5px;}
+.allDelete{display:inline-block; margin:0 0 5px 0;padding:5px 10px;font-size:13px;background:#c9161e;color:#fff;}
+
+.plz_login{background:#f3f3f3;padding:15px;font-size:13px;text-align: center}
 
 /* tbl lsit */
 .tbl_list{margin:5px 0;border-top:1px solid #555;}
@@ -104,6 +108,10 @@ header .top .user_name em{font-weight:700;}
 .join_wrap table th,.join_wrap table td{padding:6px 10px ;border-bottom:1px solid #eee;}
 .join_wrap table th{text-align:left;background:#f9f9f9;}
 .join_wrap table input{width:30%;}
+
+.thumbnail_box {display:inline-block; position: relative;}
+.thumbnail_box .btnDelete{position: absolute;top:0;right:0;width:25px;height:25px;background:rgba(0,0,0,0.5);color:#fff;line-height:23px;text-align: center;font-weight:100;}
+.thumbnail_md{margin:5px 0 0 0;font-size:14px;}
 
 
 

@@ -46,6 +46,27 @@
 			
 		});
 		
+		//체크한 파일 삭제
+		$('.allDelete').on('click',function(){
+			var fileNum = new Array(); 
+			var fullN = new Array(); 
+			for(var i=0;i<$('.down_list li').length;i++){
+				if($('.down_list li').eq(i).find('input[name="deleteNo"]:checked')){
+					
+				fileNum[i] = $('.down_list li').eq(i).find('input[name="deleteNo"]:checked').val();
+				fullN[i] = $('.down_list li').eq(i).find('input[name="deleteNo"]:checked').siblings('span').attr('path');
+
+				}
+				if(!(fileNum[i] == undefined && fullN[i] == undefined)){
+				/* console.log(fileNum[i]);
+				console.log(fullN[i]); */
+				deleteFile(fileNum[i],fullN[i]);
+				}
+			}
+			//deleteFile(fileNum,fullN);
+		});
+		
+		
 	});
 	
 	function deleteFile(fileNo, fullName) {
@@ -100,7 +121,11 @@
 				<tr>
 					<th>첨부파일</th>
 					<td>
+					
 						<div id="file">
+							<div th:if="${!#lists.isEmpty(files)}" class="down_all">
+								<a href="javascript:;" title="" class="allDelete">삭제</a>
+							</div>
 							<ul class="down_list">
 								<li th:each="file : ${files}">
 									<input type="checkbox" name="deleteNo" th:value="${file.fileNo}" />
@@ -114,13 +139,13 @@
 				<tr>
 					<th>썸네일</th>
 					<td>
-						<div th:if="${ thumbnail != null }">
-							<a th:href="|/file/displayFile?fileName=${thumbnail.fullName}|">
+						<div th:if="${ thumbnail != null }" class="thumbnail_box">
+							<a th:href="|/file/displayFile?fileName=${thumbnail.fullName}|" target="_blank" >
 								<img th:src="|/file/displayFile?fileName=${thumbnail.fullName}|" width="300" />
 							</a>
-							<span th:data="${thumbnail.fileNo}" th:path="${thumbnail.fullName}" class="btnDelete cursorP"><img src="/image/x-button.png" alt="cancel" /></span>
+							<span th:data="${thumbnail.fileNo}" th:path="${thumbnail.fullName}" class="btnDelete cursorP">x</span>
 						</div>
-						<span>수정</span><input type="file" name="thumbnail" class="" accept="image/*" />
+						<div class="thumbnail_md">수정 : <input type="file" name="thumbnail" class="" accept="image/*" /></div>
 					</td>
 				</tr>
 				<tr>

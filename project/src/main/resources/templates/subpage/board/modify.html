@@ -46,6 +46,27 @@
 			
 		});
 		
+
+		//체크한 파일 삭제
+		$('.allDelete').on('click',function(){
+			var fileNum = new Array(); 
+			var fullN = new Array(); 
+			for(var i=0;i<$('.down_list li').length;i++){
+				if($('.down_list li').eq(i).find('input[name="deleteNo"]:checked')){
+					
+				fileNum[i] = $('.down_list li').eq(i).find('input[name="deleteNo"]:checked').val();
+				fullN[i] = $('.down_list li').eq(i).find('input[name="deleteNo"]:checked').siblings('span').attr('path');
+
+				}
+				if(!(fileNum[i] == undefined && fullN[i] == undefined)){
+				console.log(fileNum[i]);
+				console.log(fullN[i]);
+				deleteFile(fileNum[i],fullN[i]);
+				}
+			}
+			//deleteFile(fileNum,fullN);
+		});
+		
 	});
 	
 	function deleteFile(fileNo, fullName) {
@@ -101,6 +122,9 @@
 					<th>파일</th>
 					<td>
 						<div id="file">
+							<div th:if="${!#lists.isEmpty(files)}" class="down_all">
+								<a href="javascript:;" title="" class="allDelete">삭제</a>
+							</div>
 							<ul class="down_list">
 								<li th:each="file : ${files}">
 									<input type="checkbox" name="deleteNo" th:value="${file.fileNo}" />
