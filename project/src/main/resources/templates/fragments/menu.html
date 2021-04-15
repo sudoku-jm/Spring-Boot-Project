@@ -7,7 +7,8 @@
 			<li><a href="../index.html" th:href="@{/}">Home</a></li>
 			<th:block sec:authorize="!isAuthenticated()">
 				<li><a href="#" th:href="@{/subpage/board/list}">게시판</a></li>				
-				<li><a href="#" th:href="@{/subpage/gallery/list}">갤러리</a></li>				
+				<li><a href="#" th:href="@{/subpage/gallery/list}">갤러리</a></li>	
+				<li><a href="#" th:href="@{/subpage/story/list}">STORY</a></li>			
 			</th:block>
 			<th:block sec:authorize="isAuthenticated()">
 				<!-- 관리자 권한 메뉴 -->
@@ -18,6 +19,7 @@
 				<th:block sec:authorize="hasRole('ROLE_USER')">
 					<li><a href="#" th:href="@{/subpage/board/list}">게시판</a></li>				
 					<li><a href="#" th:href="@{/subpage/gallery/list}">갤러리</a></li>
+					<li><a href="#" th:href="@{/subpage/story/list}">STORY</a></li>
 				</th:block>
 			</th:block>			
 		</ul>

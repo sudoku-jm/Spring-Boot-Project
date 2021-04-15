@@ -19,14 +19,18 @@ $(document).ready(function() {
 
   //story게시판 hover
   storyBoardDom();
-  $board_wrap_li.eq(0).addClass('lately');
+  $board_wrap_li.eq(0).addClass('lately').addClass('line_first');
+  $board_wrap_li.eq(1).addClass('line_first');
+  $board_wrap_li.eq(2).addClass('line_first');
   $board_wrap_li.find('a').on('mouseenter focus',function(){
    var st_index = $(this).closest('li').index();
    storayBoardMouseHover(st_index);
   });
+ 
   $board_wrap_li.find('a').on('mouseleave blur',function(){
    $board_wrap_li.find('.st_hover').remove();
-  }); 
+  });
+  
 
   //story_detail  수정삭제
   $board_redel.on('click',function(){
@@ -51,10 +55,11 @@ $(document).ready(function() {
 });
 
 //uiDom
-var $board_wrap,$board_wrap_li,stItemTmp,class_visible;
+var class_on;
+var $board_wrap,$board_wrap_li,stItem,stItemTmp,class_visible;
 var $board_redel;
 function uiDom(){
-
+class_on = 'on';
 }
 
 function storyBoardDom(){
