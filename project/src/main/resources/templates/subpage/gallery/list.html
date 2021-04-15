@@ -131,7 +131,14 @@
 					
 					<tr th:each="gallery : ${list}">
 						<td>
-							<img th:src="@{|/file/displayFile?fileName=${gallery.thumbnailPath}|}" width="100" />
+							<a href="read.html" th:href="@{|/subpage/gallery/read?boardNo=${gallery.boardNo}|}">
+								<th:block th:if="${gallery.thumbnailPath} != null">
+									<img th:src="@{|/file/displayFile?fileName=${gallery.thumbnailPath}|}" width="100" />
+								</th:block>
+								<th:block th:if="${gallery.thumbnailPath} == null">
+									<img th:src="@{/image/no_img.png}" width="100" />
+								</th:block>
+							</a>
 						</td>
 						<td th:text="${gallery.rowNo}"></td>
 						<td th:text="${gallery.boardNo}"></td>
