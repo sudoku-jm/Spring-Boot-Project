@@ -12,6 +12,7 @@
 
 <body>
 <div layout:fragment="content">
+<script src="/js/sub.js"></script>
 <script>
 	$(document).ready(function() {
 		
@@ -116,7 +117,7 @@
 		}
 		
 		// 첨부파일 가져오기
-		var boardNo = [[${gallery.boardNo}]];
+		var boardNo = [[${story.boardNo}]];
 		
 		$.getJSON("/subpage/gallery/getAttach/" + boardNo, function(list){
 			
@@ -128,7 +129,7 @@
 				
 				if(checkImageType(data)){
 					str = "<div><a href='/file/displayFile?fileName=" + data + "'>"
-						+ "<img src='/file/displayFile?fileName=" + data + "' width='500'/>"
+						+ "<img src='/file/displayFile?fileName=" + data + "' width='1000'/>"
 						+ "</a></div>";
 				}
 				else{
@@ -253,101 +254,161 @@
 	
 </script>
 	<div class="content_wrap">
-		<h2>글 읽기</h2>
-		<div class="btn_box" style="text-align: right;">
-			<a th:href="@{|read?boardNo=${gallery.boardNo-1}|}" class="btn">이전 글</a>
-			<a th:href="@{|read?boardNo=${gallery.boardNo+1}|}" class="btn">다음 글</a>
-		</div>
-		<form id="board" th:object="${gallery}" th:action="@{remove}" method="POST">
-			<input id="boardNo" type="hidden" name="boardNo" th:field="*{boardNo}" />
-			<table class="tbl_form">
-				<colgroup>
-				<col style="width:15%">
-				<col style="width:auto;">
-				</colgroup>
-				<tr>
-					<th>제목</th>
-					<td><input type="text" name="title" th:field="*{title}" readonly="readonly" class="w-100"/></td>
-				</tr>
-				<tr>
-					<th>작성자</th>
-					<td><input type="text" name="writer" th:field="*{writer}" readonly="readonly" class="w-100"/></td>
-				</tr>
-				<tr>
-					<th class="verTop">내용</th>
-					<td><textarea name="content" th:field="*{content}" rows="20" readonly="readonly" class="w-100" ></textarea></td>
-				</tr>
-				
-				<tr>
-					<th>파일</th>
-					<td>
-						<div id="file">
-							<!-- 개별다운 -->
-							<ul class="down_list">
-								<li th:each="file : ${files}">
-									<a th:href="|/file/fileDownload?fullName=${file.fullName}&fileName=${file.fileName}|" th:text="${file.fileName}" class="file"></a>
-								</li>
-							</ul>
-							<!-- 전체다운 -->
-							<div th:if="${!#lists.isEmpty(files)}">
-								<a th:href="|/file/zipDownload?boardNo=${gallery.boardNo}&title=${gallery.title}|" class="file_all">전체 다운로드</a>
-							</div>							
-						</div>
-					</td>
-				</tr>
-			</table>
-		</form>
-		
-		<!-- 썸네일 이미지 -->
-		<div style="padding: 0px 300px;">
-			<div class="attachList" style="width: 1000px; ">
-			</div>
-		</div>
-	
-		
-		
-		<!-- 댓글 목록 -->
-		<ul id="replyList" class="reply_list">
-			<li th:each=" reply : ${replyList}">
-				<span class="replyWriter" th:text="${reply.writer}"></span>
-				<span class="replyDate" th:text="${#dates.format(reply.regDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
-				<th:block th:if="${reply.writer == userId}">
-					<a href="javascript:;" title="" class="btnReplyModify" th:data="${reply.replyNo}">수정</a>				
-					<a href="javascript:;" title="" class="btnReplyRemove" th:data="${reply.replyNo}">삭제</a>
-				</th:block>
-				<span class="replyContent" th:text="${reply.content}"></span>
-					
-			</li>
-		</ul><!-- //reply_list -->
-		<!-- 댓글 입력 -->
-		<div class="plz_login" th:if="${userId == null}">
-			<p class="mrb10">로그인을 해야 댓글 남길 수 있습니다.</p>
-			<a th:href="@{/auth/login}" class="btn btn_login">로그인</a>
-		</div>
-		<div class="reply_txt" th:if="${userId != null}">
-			<div class="top">
-				<h3>댓글</h3>
-			</div>
-			<div class="con">
-				<input type="text" name="replyWriter" th:value="${userId}" id="replyWriter" placeholder="작성자" class="writer" readonly="readonly">
-				<textarea rows="5" cols="" placeholder="댓글 입력" class="w-100" id="replyContent" ></textarea>
-				<div class="btn_area">
-					<button type="button" id="btnReplyRegister" class="btn btn_reply">등록</button>
+		<div class="sub_title type2">
+            <em class="date" th:text="${#dates.format(story.regDate, 'yyyy-MM-dd HH:mm:ss')}">2020.10.10 00:00:00</em>
+            <h4 class="title" th:text="${story.title}">#2021 #리뉴얼 #UI/UX #Design</h4>
+            <span class="writer" th:text="${story.writer}">admin</span>
+            <span class="view" th:text="${story.view}">조회수 : 15</span>
+          </div><!-- //sub_title -->
+
+          <div class="board_detail">
+
+            <div class="detail_con">
+              <!-- 게시글(s) -->
+              <!-- 이미지 -->
+              <div>
+				<div class="attachList" style="width: 1000px; ">
 				</div>
-			</div>
-		</div><!-- //reply_txt -->
+			  </div>
+			  
+			  <!-- 내용 -->
+			  <div th:text="${story.content}">
+			  	
+			  </div>
+              <!-- 게시글(e) -->
+            </div><!-- //detail_con -->
+
+
+            <div class="board_etc">
+              <div class="file_wrap" >
+                <a th:href="|/file/zipDownload?boardNo=${story.boardNo}&title=${story.title}|" title="다운로드" class="filedownload">첨부 [<b>1</b>]</a>
+              </div>
+              <div class="board_redel">
+                <a href="javascript:;" title="" class="redel"></a>
+                <div class="btn_redel">
+                  <a href="javascript:;" title="">수정</a>
+                  <a href="javascript:;" title="">삭제</a>
+                </div>
+              </div>
+              <div class="tag">
+                <a href="javascript:;" title="">#일상</a>
+                <a href="javascript:;" title="">#리뉴얼</a>
+                <a href="javascript:;" title="">#웹디자인</a>
+              </div>
+            </div><!-- //board_etc -->
+
+            <div class="board_btn_area">
+              <a href="javascript:;" title="" class="btn_board_back">목록</a>
+            </div><!-- //board_btn_area -->
+
+            <div class="reply_wrap">
+              <div class="reply_cnt">댓글 <b>2</b>개</div>
+
+              <div class="reply_list reply2">
+
+                <div class="reply_box">
+                  <div class="profile">
+                    <img src="images/sub/story/profile_test.png" alt="">
+                  </div>
+                  <div class="info">
+                    <p class="name">test</p>
+                    <p class="date">2021.12.12 00:00</p>
+                  </div>
+                  <div class="text">
+                    테스트 댓글입니다.
+                  </div>
+                  <div class="btn">
+                    <a href="javascript:;" title="" class="re_reply">댓글</a>
+                    <a href="javascript:;" title="" class="re_write">수정</a>
+                    <a href="javascript:;" title="" class="re_delete">삭제</a>
+                  </div>
+                  <div class="re_write_wrap">
+                    <h3>댓글 수정하기</h3>
+                    <textarea rows="3" class="w100"></textarea>
+                    <div class="writer_info">
+                      <input type="text" name="" maxlength="10" placeholder="글쓴이" class="writer">
+                      <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw">
+                      <input type="text" name="" placeholder="홈페이지" class="reply_url">
+
+                      <input type="button" name="" value="댓글수정" class="btn_reply">
+                    </div>
+                  </div>
+                  <!-- //re_write_wrap 수정시 노출 -->
+                </div><!-- //reply_box -->
+                <div class="reply_box reply_as">
+                  <div class="profile">
+                    <img src="images/sub/story/profile_test.png" alt="">
+                  </div>
+                  <div class="info">
+                    <p class="name">test</p>
+                    <p class="date">2021.12.12 00:00</p>
+                  </div>
+                  <div class="text">
+                    테스트 댓글입니다.
+                  </div>
+                  <div class="btn">
+                    <a href="javascript:;" title="" class="re_reply">댓글</a>
+                    <a href="javascript:;" title="" class="re_write">수정</a>
+                    <a href="javascript:;" title="" class="re_delete">삭제</a>
+                  </div>
+
+                  <div class="reply_chk_pw">
+                    <h5>비밀번호를 입력해주세요</h5>
+                    <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw">
+                    <input type="button"  name="" value="확인" class="btn_chk">
+                  </div>
+                  <!-- //reply_chk_pw -->
+                </div><!-- //reply_box -->
+
+                <div class="reply_box">
+                  <div class="profile">
+                    <img src="images/sub/story/profile_test.png" alt="">
+                  </div>
+                  <div class="info">
+                    <p class="name">test22</p>
+                    <p class="date">2021.12.12 00:00</p>
+                  </div>
+                  <div class="text">
+                    테스트 댓글입니다.222
+                  </div>
+                  <div class="btn">
+                    <a href="javascript:;" title="" class="re_reply">댓글</a>
+                    <a href="javascript:;" title="" class="re_write">수정</a>
+                    <a href="javascript:;" title="" class="re_delete">삭제</a>
+                  </div>
+
+                  <div class="re_write_wrap reply_write_as">
+                    <h3>답변달기</h3>
+                    <textarea rows="3" class="w100"></textarea>
+                    <div class="writer_info">
+                      <input type="text" name="" maxlength="10" placeholder="글쓴이" class="writer">
+                      <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw">
+                      <input type="text" name="" placeholder="홈페이지" class="reply_url">
+
+                      <input type="button" name="" value="취소" class="btn_cancel">
+                      <input type="button" name="" value="답변등록" class="btn_reply">
+                    </div>
+                  </div><!-- //re_write_wrap -->
+                </div><!-- //reply_box -->
+
+              </div><!-- //reply_list -->
+              
+              <div class="reply_write">
+                <textarea rows="3" class="w100"></textarea>
+                <div class="writer_info">
+                  <input type="text" name="" maxlength="10" placeholder="글쓴이" class="writer">
+                  <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw">
+                  <input type="text" name="" placeholder="홈페이지" class="reply_url">
+
+                  <input type="button" name="" value="댓글등록" class="btn_reply">
+                </div>
+              </div><!-- //reply_write -->
+            </div><!-- //reply_wrap -->
+
+          </div><!-- //board_detail -->
 		
-		<div class="btn_box">
-			<a th:href="@{|answer?groupNo=${gallery.boardNo}|}" id="btnAnswer" class="btn sch">답글</a>
-			<th:block th:if="${set}">
-			<button type="submit" id="btnModify" class="btn btn_rewite">수정</button>
-			<button type="submit" id="btnRemove" class="btn btn_del">삭제</button>
-			</th:block>
-			<button type="submit" id="btnList" class="btn">목록</button>
-		</div>
 	</div>
 </div>
-
 </body>
 </html>
 

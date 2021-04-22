@@ -22,9 +22,15 @@
 			
 			// 등록 버튼 클릭 이벤트
 			$('#btnRegister').on('click',function(){
-				form.attr('action', 'register');
-				form.attr('method', 'post');
-				form.submit();
+				
+				// validate
+// 				if( validate() ){
+					form.attr('action', 'register');
+					form.attr('method', 'post');
+					form.submit();
+// 				} 
+				
+				
 			});
 	
 			// 목록 버튼 클릭 이벤트
@@ -53,6 +59,15 @@
 			var filesArr = Array.prototype.slice.call(files);
 			
 			var index = 0;
+			var length = files.length;
+			
+			if( length > 5 ){
+				alert("최대 5개  jpeg, jpg, gif, png 확장자만 지원합니다.");
+				return;
+			}
+			
+			$(".uploadImg").attr("src","/image/no_img.png");
+			
 			for( var i = 0 ; i < files.length ; i++ ){
 				var reader = new FileReader();
 				reader.onload = function(e) {
@@ -67,16 +82,22 @@
 		}
 		
 		
+		function validate() {
+			
+		}
+		
+		
 		
 	</script>
 
 	<div class="content_wrap">
 		 <!-- 게시글(s) -->
          <form id="board" class="detail_write_wrap" th:action="@{register}" method="POST" enctype="multipart/form-data">
+         	<input type="hidden" name="writer" class="w-100" th:value="${userId}" readonly="readonly" />
            <span class="label">제목</span>
-           <input type="text" name="storyTitle" class="title w100">
+           <input type="text" name="title" class="title w100">
            <span class="label">내용</span>
-           <textarea id="txtContent" rows="10" class="txt w100"></textarea>
+           <textarea id="txtContent" rows="10" name="content" class="txt w100"></textarea>
            <span class="label">본문 이미지</span>
            <div class="file_wrap">
              <p class="colorR">
@@ -92,7 +113,7 @@
              <ul class="img_view clfix">
                <li>
                  <div class="img">
-                   <img src="/image/no_img.png" alt="" id="img1">
+                   <img src="/image/no_img.png" alt="" id="img1" class="uploadImg">
                  </div>
                  <div class="radio_box">
                    <input type="radio" name="thumbnailNo" id="test1" value="1">
@@ -101,7 +122,7 @@
                </li>
                <li>
                  <div class="img">
-                   <img src="/image/no_img.png" alt="" id="img2">
+                   <img src="/image/no_img.png" alt="" id="img2" class="uploadImg">
                  </div>
                  <div class="radio_box">
                    <input type="radio" name="thumbnailNo" id="test2" value="2">
@@ -110,7 +131,7 @@
                </li>
                <li>
                  <div class="img">
-                   <img src="/image/no_img.png" alt="" id="img3">
+                   <img src="/image/no_img.png" alt="" id="img3" class="uploadImg">
                  </div>
                  <div class="radio_box">
                    <input type="radio" name="thumbnailNo" id="test3" value="3">
@@ -119,7 +140,7 @@
                </li>
                <li>
                  <div class="img">
-                   <img src="/image/no_img.png" alt="" id="img4">
+                   <img src="/image/no_img.png" alt="" id="img4" class="uploadImg">
                  </div>
                  <div class="radio_box">
                    <input type="radio" name="thumbnailNo" id="test4" value="4">
@@ -128,7 +149,7 @@
                </li>
                <li>
                  <div class="img">
-                   <img src="/image/no_img.png" alt="" id="img5">
+                   <img src="/image/no_img.png" alt="" id="img5" class="uploadImg">
                  </div>
                  <div class="radio_box">
                    <input type="radio" name="thumbnailNo" id="test5" value="5">

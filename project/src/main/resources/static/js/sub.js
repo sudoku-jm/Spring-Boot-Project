@@ -41,14 +41,23 @@ $(document).ready(function() {
   });
 
   $('.detail_write_wrap .img_view li').on('click',function(){
-     $(this).siblings('li').find('input').removeAttr('checked');
-     $(this).siblings('li').find('.thum').remove();
-     if(!$(this).find('input').is(':checked')){
-      $(this).find('input').attr('checked','checked');
-      $(this).find('.img').append('<div class="thum">대표</div>');
-     }else{
-      $(this).find('input').removeAttr('checked');
-     }
+  
+  	if( $(this).find('.uploadImg').attr('src') == '/image/no_img.png' ) {
+  		alert("등록된 이미지가 없습니다.");
+  		return;
+  	}
+  
+  	$(this).siblings('li').find('input').removeAttr('checked');
+    $(this).siblings('li').find('.thum').remove();
+  	
+  	if($(this).find('input').is(':checked')){
+	  	$(this).find('input').removeAttr('checked');
+	  	$(this).find('.thum').remove();
+  	} else {
+	  	$(this).find('input').attr('checked','checked');
+	  	$(this).find('.img').append('<div class="thum">대표</div>');
+  	}
+  	
   });
 
 
