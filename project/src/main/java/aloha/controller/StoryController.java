@@ -119,46 +119,52 @@ public class StoryController {
 	
 	// 게시글 쓰기 처리
 	@RequestMapping( value = "/register", method = RequestMethod.POST)
-	public String register(Model model, Story story) throws Exception {
-		// [파일 업로드]
-		MultipartFile[] file = story.getFile();
-//		String[] filePath = story.getFilePath();
+	public String register(Model model, Story story, int[] thumbnailNo) throws Exception {
 		
-		// file 정보 확인
-		for (MultipartFile f : file) {
-			log.info("originalName : " + f.getOriginalFilename());
-			log.info("size : " + f.getSize());
-			log.info("contentType : " + f.getContentType());
+		for (int i = 0; i < thumbnailNo.length; i++) {
+			log.info(i + " : " + thumbnailNo[i] );
 		}
 		
-		// 파일 업로드 처리 - uploadFiles()
-		ArrayList<StoryAttach> attachList = uploadFiles(file);
 		
-		// [썸네일 정보]
-		MultipartFile thumbnail = story.getThumbnail();
-//		String thumbnailPath = story.getThumbnailPath();
-		// thumbnail 정보 확인
-		log.info("#### [썸네일] ####");
-		log.info("originalName : " + thumbnail.getOriginalFilename());
-		log.info("size : " + thumbnail.getSize());
-		log.info("contentType : " + thumbnail.getContentType());
-		
-		// 썸네일이 있으면 추가
-		if( !thumbnail.isEmpty() ) {
-			StoryAttach thumbnailAttach = uploadFile(thumbnail);
-			thumbnailAttach.setCategory("thumbnail");
-			attachList.add(thumbnailAttach);
-		} else {
-			// 기본 이미지?
-		}
-		
-		// 게시글 등록
-		service.register(story);
-		
-		// 첨부파일 등록
-		for (StoryAttach attach : attachList) {
-			service.uploadFile(attach);
-		}
+//		// [파일 업로드]
+//		MultipartFile[] file = story.getFile();
+////		String[] filePath = story.getFilePath();
+//		
+//		// file 정보 확인
+//		for (MultipartFile f : file) {
+//			log.info("originalName : " + f.getOriginalFilename());
+//			log.info("size : " + f.getSize());
+//			log.info("contentType : " + f.getContentType());
+//		}
+//		
+//		// 파일 업로드 처리 - uploadFiles()
+//		ArrayList<StoryAttach> attachList = uploadFiles(file);
+//		
+//		// [썸네일 정보]
+//		MultipartFile thumbnail = story.getThumbnail();
+////		String thumbnailPath = story.getThumbnailPath();
+//		// thumbnail 정보 확인
+//		log.info("#### [썸네일] ####");
+//		log.info("originalName : " + thumbnail.getOriginalFilename());
+//		log.info("size : " + thumbnail.getSize());
+//		log.info("contentType : " + thumbnail.getContentType());
+//		
+//		// 썸네일이 있으면 추가
+//		if( !thumbnail.isEmpty() ) {
+//			StoryAttach thumbnailAttach = uploadFile(thumbnail);
+//			thumbnailAttach.setCategory("thumbnail");
+//			attachList.add(thumbnailAttach);
+//		} else {
+//			// 기본 이미지?
+//		}
+//		
+//		// 게시글 등록
+//		service.register(story);
+//		
+//		// 첨부파일 등록
+//		for (StoryAttach attach : attachList) {
+//			service.uploadFile(attach);
+//		}
 		
 		model.addAttribute("msg", "등록이 완료되었습니다.");
 		return "subpage/story/success";
