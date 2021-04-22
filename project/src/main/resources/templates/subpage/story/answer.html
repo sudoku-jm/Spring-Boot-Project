@@ -1,0 +1,116 @@
+
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{/layouts/main_template}"
+	  >
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+</head>
+
+<body>
+<div layout:fragment="content">
+
+<script>
+	$(document).ready(function() {
+		
+		var form = $('#board');
+		
+		// 등록 버튼 클릭 이벤트
+		$('#btnRegister').on('click',function(){
+			form.attr('method', 'post');
+			form.submit();
+		});
+
+		// 목록 버튼 클릭 이벤트
+		$('#btnList').on('click',function(){
+			self.location  = "list";
+		});
+		
+	});
+</script>
+
+	<div class="colum_wrap clfix">
+		<div class="col_row">
+			<h2>원본 게시글</h2>
+			<form id="read" th:object="${gallery}" method="POST">
+				<input id="boardNo" type="hidden" name="boardNo" th:field="*{boardNo}" />
+				<table class="tbl_form">
+					<colgroup>
+					<col style="width:15%">
+					<col style="width:auto;">
+					</colgroup>
+					<tr>
+						<th>제목</th>
+						<td><input type="text" name="title" th:field="*{title}" readonly="readonly" class="w-100"/></td>
+					</tr>
+					<tr>
+						<th>작성자</th>
+						<td><input type="text" name="writer" th:field="*{writer}" readonly="readonly" class="w-100"/></td>
+					</tr>
+					<tr>
+						<th class="verTop">내용</th>
+						<td><textarea name="content" th:field="*{content}" rows="20" readonly="readonly" class="w-100" ></textarea></td>
+					</tr>
+					
+					<tr>
+						<th>파일</th>
+						<td>
+							<div id="file">
+								<!-- 개별다운 -->
+								<ul class="down_list">
+									<li th:each="file : ${files}">
+										<a th:href="|/file/fileDownload?fullName=${file.fullName}&fileName=${file.fileName}|" th:text="${file.fileName}" class="file"></a>
+									</li>
+								</ul>
+								<!-- 전체다운 -->
+								<div th:if="${!#lists.isEmpty(files)}">
+									<a th:href="|/file/zipDownload?boardNo=${gallery.boardNo}&title=${gallery.title}|" class="file_all">전체 다운로드</a>
+								</div>							
+							</div>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		<div class="col_row">
+			<h2>답글쓰기</h2>
+			<form id="board" th:object="${gallery}" th:action="@{answerRegister}" method="POST" enctype="multipart/form-data">
+				<input id="boardNo" type="hidden" name="boardNo" th:field="*{boardNo}" />	<!-- 부모글의 글 번호 -->
+				<input id="groupNo" type="hidden" name="groupNo" th:field="*{groupNo}" />	<!-- 부모글의 그룹 번호 -->
+				<input id="seqNo" type="hidden" name="seqNo" th:field="*{seqNo}" />			<!-- 부모글의 순서 번호 -->
+				
+				<table class="tbl_form">
+					<colgroup>
+					<col style="width:15%">
+					<col style="width:auto;">
+					</colgroup>
+					<tr>
+						<th>제목</th>
+						<td><input type="text" name="title" class="w-100"/></td>
+					</tr>
+					<tr>
+						<th>작성자</th>
+						<td><input type="text" name="writer" th:value="${userId}" class="w-100" readonly="readonly"/></td>
+					</tr>
+					<tr>
+						<th class="verTop">내용</th>
+						<td><textarea name="content" rows="20"  class="w-100" ></textarea></td>
+					</tr>
+					<tr>
+						<th>파일</th>
+						<td><input type="file" name="file" multiple="multiple" class="w-100" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+	<div class="btn_box mrt30">
+		<button type="submit" id="btnRegister" class="btn btn_submit">등록</button>
+		<button type="submit" id="btnList" class="btn btn_list">목록</button>
+	</div>
+</div>		
+</body>
+</html>
