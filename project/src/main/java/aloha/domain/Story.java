@@ -28,5 +28,7 @@ public class Story {
 	private String thumbnailName;		// 썸네일 파일 이름
 	
 	private int view;					// 조회수
+	
+	private int thumbnailNo;			// 썸네일 이미지 번호
 		
 }
