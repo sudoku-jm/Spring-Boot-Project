@@ -116,8 +116,14 @@ public class FileController {
 		// 글 제목
 		String title = paramMap.get("title");
 		
+		//테이블 명
+		String table = paramMap.get("table");
+		
 		// 글 번호에 따른 모든 첨부파일 리스트 조회
-		List<BoardAttach> fileList = service.readFileList(boardNo);
+		//board_attach로만 첨부파일 요청을 보냈었음.
+//		List<BoardAttach> fileList = service.readFileList(boardNo, table);
+		//각 테이블 첨부파일 요청 보낼 수 있도록 테이블 지정함.
+		List<FileAttach> fileList = fileService.readFileList(boardNo, table);
 		
 		// 다운로드 파일 명
 		String zipFile = "temp.zip";

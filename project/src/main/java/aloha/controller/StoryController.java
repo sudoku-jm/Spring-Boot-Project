@@ -31,9 +31,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import aloha.domain.Story;
 import aloha.domain.StoryAttach;
+import aloha.domain.Tag;
 import aloha.domain.Page;
 import aloha.domain.Reply;
 import aloha.service.StoryService;
+import aloha.service.TagService;
 import aloha.util.MediaUtils;
 
 @Controller
@@ -50,6 +52,9 @@ public class StoryController {
 	
 	@Autowired
 	private StoryService service;
+	
+	@Autowired
+	private TagService tagService;
 	
 	
 	// 게시글 목록 화면
@@ -119,11 +124,12 @@ public class StoryController {
 	
 	// 게시글 쓰기 처리
 	@RequestMapping( value = "/register", method = RequestMethod.POST)
-	public String register(Model model, Story story, int thumbnailNo) throws Exception {
+	public String register(Model model, Story story, Integer thumbnailNo, String tags) throws Exception {
 		
 		// [파일 업로드]
 		MultipartFile[] files = story.getFile();
-		story.setThumbnail( files[thumbnailNo-1] );
+		if(thumbnailNo != null)
+			story.setThumbnail( files[thumbnailNo-1] );
 		
 		// file 정보 확인
 		for (MultipartFile file : files) {
@@ -138,14 +144,16 @@ public class StoryController {
 		// [썸네일 정보]
 		MultipartFile thumbnail = story.getThumbnail();
 		
-		// thumbnail 정보 확인
-		log.info("#### [썸네일] ####");
-		log.info("originalName : " + thumbnail.getOriginalFilename());
-		log.info("size : " + thumbnail.getSize());
-		log.info("contentType : " + thumbnail.getContentType());
 		
 		// 썸네일이 있으면 추가
-		if( !thumbnail.isEmpty() ) {
+		if( thumbnail != null && !thumbnail.isEmpty() ) {
+
+			// thumbnail 정보 확인
+			log.info("#### [썸네일] ####");
+			log.info("originalName : " + thumbnail.getOriginalFilename());
+			log.info("size : " + thumbnail.getSize());
+			log.info("contentType : " + thumbnail.getContentType());
+			
 			StoryAttach thumbnailAttach = uploadFile(thumbnail);
 			thumbnailAttach.setCategory("thumbnail");
 			attachList.add(thumbnailAttach);
@@ -161,6 +169,15 @@ public class StoryController {
 			service.uploadFile(attach);
 		}
 		
+		// 해시태그 등록
+       log.info(tags);
+       // #데이트, #데일리   ,   #맛   집,   #테스트 
+       String[] tagArr = tags.replaceAll(" ", "").split(",");
+      
+       for (String tag : tagArr) {
+    	   tagService.createTag(new Tag("story",tag));//생성자 등록
+       }
+	      
 		model.addAttribute("msg", "등록이 완료되었습니다.");
 		return "subpage/story/success";
 	}

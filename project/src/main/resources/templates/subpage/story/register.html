@@ -93,7 +93,9 @@
 	<div class="content_wrap">
 		 <!-- 게시글(s) -->
          <form id="board" class="detail_write_wrap" th:action="@{register}" method="POST" enctype="multipart/form-data">
-         	<input type="hidden" name="writer" class="w-100" th:value="${userId}" readonly="readonly" />
+         	<input type="hidden" name="writer" th:value="${userId}" readonly="readonly" />
+         	<input type="hidden" name="table" value="table" readonly="readonly" />
+         	
            <span class="label">제목</span>
            <input type="text" name="title" class="title w100">
            <span class="label">내용</span>
@@ -160,7 +162,7 @@
            
            </div><!-- //file_wrap -->
            <span class="label">태그</span>
-           <input type="text" name="storyTag" placeholder="예) #태그명,#태그명2" class="w100">
+           <input type="text" name="tags" placeholder="예) #태그명,#태그명2" class="w100">
            <span class="label">공개설정</span>
            <div>
              <div class="radio_box">

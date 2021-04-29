@@ -9,7 +9,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		DELETE FROM ${table}
 		WHERE file_no = #{fileNo}
 	</delete>
-
+	
+	<!-- 파일목록 조회 [테이블] -->
+	<select id="readFileList" resultType="FileAttach">
+		SELECT *
+		FROM ${table}
+		WHERE board_no = #{boardNo}
+		AND category != 'thumbnail'
+	</select>
 
 
 </mapper>

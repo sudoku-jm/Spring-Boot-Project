@@ -22,12 +22,12 @@ $(document).ready(function() {
   $board_wrap_li.eq(0).addClass('lately').addClass('line_first');
   $board_wrap_li.eq(1).addClass('line_first');
   $board_wrap_li.eq(2).addClass('line_first');
-  $board_wrap_li.find('a').on('mouseenter focus',function(){
+  $board_wrap_li.find('a').on('mouseenter',function(){
    var st_index = $(this).closest('li').index();
    storayBoardMouseHover(st_index);
   });
  
-  $board_wrap_li.find('a').on('mouseleave blur',function(){
+  $board_wrap_li.find('a').on('mouseleave',function(){
    $board_wrap_li.find('.st_hover').remove();
   });
   
@@ -55,6 +55,7 @@ $(document).ready(function() {
 	  	$(this).find('.thum').remove();
   	} else {
 	  	$(this).find('input').attr('checked','checked');
+	  	$(this).find('.thum').remove();
 	  	$(this).find('.img').append('<div class="thum">대표</div>');
   	}
   	

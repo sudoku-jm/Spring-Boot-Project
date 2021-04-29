@@ -129,7 +129,7 @@
 				
 				if(checkImageType(data)){
 					str = "<div><a href='/file/displayFile?fileName=" + data + "'>"
-						+ "<img src='/file/displayFile?fileName=" + data + "' width='1000'/>"
+						+ "<img src='/file/displayFile?fileName=" + data + "'/>"
 						+ "</a></div>";
 				}
 				else{
@@ -267,7 +267,7 @@
               <!-- 게시글(s) -->
               <!-- 이미지 -->
               <div>
-				<div class="attachList" style="width: 1000px; ">
+				<div class="attachList">
 				</div>
 			  </div>
 			  
@@ -280,14 +280,17 @@
 
 
             <div class="board_etc">
+            <!-- board, gallery, story 각각 테이블에서 첨부파일 가져오도록 로직수정 -->
+			<!-- 첨부파일 없을 때는 0 으로 표시  -->
               <div class="file_wrap" >
-                <a th:href="|/file/zipDownload?boardNo=${story.boardNo}&title=${story.title}|" title="다운로드" class="filedownload">첨부 [<b>1</b>]</a>
+                <a th:href="|/file/zipDownload?boardNo=${story.boardNo}&title=${story.title}&table=story_attach|" target="_blank" title="다운로드" class="filedownload">
+                	첨부 [<b th:text="${#lists.size(files)}">1</b>]</a>
               </div>
               <div class="board_redel">
                 <a href="javascript:;" title="" class="redel"></a>
                 <div class="btn_redel">
-                  <a href="javascript:;" title="">수정</a>
-                  <a href="javascript:;" title="">삭제</a>
+                  <a href="javascript:;" title="" id="btnModify">수정</a>
+                  <a href="javascript:;" title="" id="btnRemove">삭제</a>
                 </div>
               </div>
               <div class="tag">
@@ -298,7 +301,7 @@
             </div><!-- //board_etc -->
 
             <div class="board_btn_area">
-              <a href="javascript:;" title="" class="btn_board_back">목록</a>
+              <a href="javascript:;" title="" class="btn_board_back" id="btnList">목록</a>
             </div><!-- //board_btn_area -->
 
             <div class="reply_wrap">

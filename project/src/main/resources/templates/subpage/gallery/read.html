@@ -290,7 +290,6 @@
 							</ul>
 							<!-- 전체다운 -->
 							<!-- board, gallery, story 각각 테이블에서 첨부파일 가져오도록 로직수정 -->
-							<!-- 첨부파일 없을 때는 0 으로 표시  -->
 							<div th:if="${!#lists.isEmpty(files)}">
 								<a th:href="|/file/zipDownload?boardNo=${gallery.boardNo}&title=${gallery.title}|" class="file_all">전체 다운로드</a>
 							</div>							
