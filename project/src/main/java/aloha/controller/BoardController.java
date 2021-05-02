@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +34,9 @@ import aloha.domain.Board;
 import aloha.domain.BoardAttach;
 import aloha.domain.Page;
 import aloha.domain.Reply;
+import aloha.domain.Tag;
 import aloha.service.BoardService;
+import aloha.service.TagService;
 import aloha.util.MediaUtils;
 
 @Controller
@@ -49,6 +52,10 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService service;
+	
+	
+	@Autowired
+	private TagService tagService;
 	
 	
 	// 게시글 목록 화면
@@ -114,7 +121,7 @@ public class BoardController {
 	
 	// 게시글 쓰기 처리
 	@RequestMapping( value = "/register", method = RequestMethod.POST)
-	public String register(Model model, Board board) throws Exception {
+	public String register(Model model, Board board,String tags) throws Exception {
 		// [파일 업로드]
 		MultipartFile[] file = board.getFile();
 		String[] filePath = board.getFilePath();
@@ -137,6 +144,22 @@ public class BoardController {
 			service.uploadFile(attach);
 		}
 		
+		// 해시태그 등록
+       log.info(tags);
+       // #데이트, #데일리   ,   #맛   집,   #테스트 
+       String[] tagArr = tags.replaceAll(" ", "").split(",");
+       HashSet<String> tagSet = new HashSet<String>();
+       
+       //tagArr(중복포함)->tagSet(중복제거)
+       for(String tag : tagArr) {
+    	   tagSet.add(tag);
+       }
+      
+       for (String tag : tagSet) {
+    	  // log.info(tag);
+    	   tagService.createTag(new Tag("board",tag));//생성자 등록
+       }
+	
 		model.addAttribute("msg", "등록이 완료되었습니다.");
 		return "subpage/board/success";
 	}
@@ -163,6 +186,9 @@ public class BoardController {
 			model.addAttribute("set", true);//작성자일 경우만 수정,삭제 노출
 		}
 		
+		//태그 조회
+		model.addAttribute("tagList",tagService.readTagList(new Tag("board",boardNo)) );
+					
 		
 		// 조회 수 증가
 		service.view(boardNo);

@@ -40,6 +40,7 @@ $(document).ready(function() {
     $(this).siblings('.btn_redel').removeClass(class_on);
   });
 */
+/*
   $('.detail_write_wrap .img_view li').on('click',function(){
   
   	if( $(this).find('.uploadImg').attr('src') == '/image/no_img.png' ) {
@@ -60,6 +61,25 @@ $(document).ready(function() {
   	}
   	
   });
+  */
+  
+  $('.detail_write_wrap .img_view .img').on('click',function(){
+  
+    	if( $(this).find('.uploadImg').attr('src') == '/image/no_img.png' ) {
+    		alert("등록된 이미지가 없습니다.");
+    		return;
+    	}
+      imgViewCheckThum(this);
+    });
+  $('.detail_write_wrap .img_view .radio_box').on('click',function(){
+
+    if( $(this).closest('li').find('.uploadImg').attr('src') == '/image/no_img.png' ) {
+      alert("등록된 이미지가 없습니다.");
+      return;
+    }
+    imgViewCheck(this);
+  });
+    
 
 
 });
@@ -93,3 +113,29 @@ function storayBoardMouseHover(index){
   
   $board_wrap_li.eq(index).find('a').append(stItemTmp);
 }
+
+function imgViewCheckThum(path){
+  $(path).closest('li').siblings('li').find('input').removeAttr('checked');
+  $(path).closest('li').siblings('li').find('.thum').remove();
+  
+  if($(path).closest('li').find('input').is(':checked')){ //체크 된 상태
+    $(path).closest('li').siblings('li').find('input').removeAttr('checked');
+    $(path).closest('li').siblings('li').find('.thum').remove();
+  } else { //체크 아닐 시
+    $(path).closest('li').find('input').attr('checked','checked');
+    $(path).closest('li').find('.thum').remove();
+    $(path).closest('li').find('.img').append('<div class="thum">대표</div>');
+  }
+
+}
+
+function imgViewCheck(path){
+  //전체적으로 체크 풀기
+  $(path).closest('li').siblings('li').find('input').removeAttr('checked');
+  $(path).closest('li').find('input').attr('checked','checked');
+  $(path).closest('li').find('.thum').remove();
+  $(path).closest('li').siblings('li').find('.thum').remove();
+  $(path).closest('li').find('.img').append('<div class="thum">대표</div>');
+
+}
+

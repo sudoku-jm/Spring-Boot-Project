@@ -6,20 +6,25 @@
 </head>
 <script src="/js/jquery-3.5.1.min.js"></script>
 <script>
+
+var reply_size;
+
 //댓글 수정 버튼 클릭 이벤트
 $('.btnReplyModify').on('click', function() {
-	var reply_list = $(this).parent();
-	reply_list.children('div').remove();
+	var reply_list = $(this).parent().parent();
+	reply_list.children('div').remove('.re_write_wrap'); 
 	var reply_no = $(this).attr('data');
-	var reply_writer = reply_list.children('.replyWriter').text();
+	var reply_writer = reply_list.children('.info').children('.replyWriter').text();
 	var reply_content = reply_list.children('.replyContent').text();
 	
-	var edtitor = "<div class='reply_modify clfix'> "
-				+ "<input type='text' name='replyWriter' class='replyWriter' value=" + reply_writer + " >"
-				+ "<textarea rows='4' cols='' class='w-100'>" + reply_content + "</textarea>"
-				+ "<button type='button' class='btn btn_reply btnReplyRegister' data='" + reply_no + "'>등록</button>"
-				+ "</div>"
-				
+	var edtitor = "<div class='re_write_wrap'> "
+		+ "<h3>댓글 수정하기</h3>"
+		+ "<textarea rows='3' cols='' class='w-100'>" + reply_content + "</textarea>"
+		+ "<div class='writer_info'>"
+		+ "<input type='text' name='replyWriter' class='writer replyWriter' value=" + reply_writer + " >"
+		+ "<input type='button' value='댓글수정' class='btn_reply btnReplyRegister' data='" + reply_no + "'>"
+		+ "</div>"
+		+ "</div>"
 	reply_list.append(edtitor);
 				
 				
@@ -29,8 +34,12 @@ $('.btnReplyModify').on('click', function() {
 		var btn = $(this);
 		var reply_no = btn.attr('data');
 		var board_no = $('#boardNo').val();
-		var reply_writer = btn.parent().children('input').val();
-		var reply_content = btn.parent().children('textarea').val();
+		var reply_writer = btn.siblings('.replyWriter').val();
+		var reply_content = btn.parent().parent().children('textarea').val();
+		
+		console.log('reply_no : ' + reply_no);
+		console.log('reply_writer : ' + reply_writer);
+		console.log('reply_content : ' + reply_content);
 		
 		updateReply( reply_no, board_no, reply_writer, reply_content );
 		
@@ -44,20 +53,38 @@ $('.btnReplyRemove').on('click', function() {
 	var board_no = $('#boardNo').val();
 	
 	removeReply(reply_no, board_no);
+	
+	$('.replySize').text(replySize()-1);
 });
+
+//댓글 개수 구하기
+function replySize(){
+	reply_size = $('.reply_box').length;
+	console.log(reply_size);
+	return reply_size;
+}
+
+
+
+
 </script>
 
 <body>
 	<!-- 댓글 목록 -->
-	<li th:each=" reply : ${replyList}">
-		<span class="replyWriter" th:text="${reply.writer}"></span>
-		<span class="replyDate" th:text="${#dates.format(reply.regDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
-		<th:block th:if="${reply.writer == userId}">
-			<a href="javascript:;" title="" class="btnReplyModify" th:data="${reply.replyNo}">수정</a>				
-			<a href="javascript:;" title="" class="btnReplyRemove" th:data="${reply.replyNo}">삭제</a>
-		</th:block>
-		<span class="replyContent" th:text="${reply.content}"></span>
-			
-	</li>
+	<div class="reply_box" th:each=" reply : ${replyList}">
+		<div class="profile">
+          <img src="images/sub/story/profile_test.png" alt="">
+        </div>
+        <div class="info">
+        	<p class="name replyWriter" th:text=${reply.writer}></p>
+        	<p class="date replyDate" th:text="${#dates.format(reply.regDate, 'yyyy-MM-dd')}"></p>
+        </div>
+		<div class="replyContent" th:text=${reply.content}></div>
+		<div class="btn"  th:if="${reply.writer == userId}">
+           <a href="javascript:;" title="" class="re_reply">댓글</a>
+           <a href="javascript:;" title="" class="re_write btnReplyModify" th:data="${reply.replyNo}">수정</a>
+           <a href="javascript:;" title="" class="re_delete btnReplyRemove"  th:data="${reply.replyNo}">삭제</a>
+         </div>			
+	</div>
 </body>
 </html>

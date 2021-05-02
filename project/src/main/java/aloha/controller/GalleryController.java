@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +34,9 @@ import aloha.domain.Gallery;
 import aloha.domain.GalleryAttach;
 import aloha.domain.Page;
 import aloha.domain.Reply;
+import aloha.domain.Tag;
 import aloha.service.GalleryService;
+import aloha.service.TagService;
 import aloha.service.GalleryService;
 import aloha.util.MediaUtils;
 
@@ -51,6 +54,9 @@ public class GalleryController {
 	
 	@Autowired
 	private GalleryService service;
+	
+	@Autowired
+	private TagService tagService;
 	
 	
 	// 게시글 목록 화면
@@ -120,7 +126,7 @@ public class GalleryController {
 	
 	// 게시글 쓰기 처리
 	@RequestMapping( value = "/register", method = RequestMethod.POST)
-	public String register(Model model, Gallery gallery) throws Exception {
+	public String register(Model model, Gallery gallery,String tags) throws Exception {
 		// [파일 업로드]
 		MultipartFile[] file = gallery.getFile();
 //		String[] filePath = gallery.getFilePath();
@@ -153,6 +159,7 @@ public class GalleryController {
 			// 기본 이미지?
 		}
 		
+		
 		// 게시글 등록
 		service.register(gallery);
 		
@@ -161,6 +168,23 @@ public class GalleryController {
 			service.uploadFile(attach);
 		}
 		
+		
+		// 해시태그 등록
+       log.info(tags);
+       // #데이트, #데일리   ,   #맛   집,   #테스트 
+       String[] tagArr = tags.replaceAll(" ", "").split(",");
+       HashSet<String> tagSet = new HashSet<String>();
+       
+       //tagArr(중복포함)->tagSet(중복제거)
+       for(String tag : tagArr) {
+    	   tagSet.add(tag);
+       }
+      
+       for (String tag : tagSet) {
+    	  // log.info(tag);
+    	   tagService.createTag(new Tag("gallery",tag));//생성자 등록
+       }
+	
 		model.addAttribute("msg", "등록이 완료되었습니다.");
 		return "subpage/gallery/success";
 	}
@@ -190,6 +214,10 @@ public class GalleryController {
 		if( writerId.equals(userId) ) {
 			model.addAttribute("set", true);//작성자일 경우만 수정,삭제 노출
 		}
+
+		//태그 조회
+		model.addAttribute("tagList",tagService.readTagList(new Tag("gallery",boardNo)) );
+					
 		
 		// 조회 수 증가
 		service.view(boardNo);

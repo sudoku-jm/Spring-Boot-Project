@@ -17,7 +17,7 @@
 	$(document).ready(function() {
 		
 		var form = $('#board');
-		
+		var reply_size;
 		
 		// 수정 버튼 클릭 이벤트
 		$('#btnModify').on('click',function(){
@@ -42,30 +42,35 @@
 		
 		// 댓글 등록 버튼 클릭 이벤트
 		$('#btnReplyRegister').on('click',function(){
-			var reply = $(this).closest('.reply_txt').find('textarea');
+			var reply = $(this).closest('.reply_write').find('textarea');
 			var reply_writer = $('#replyWriter').val(); 
 			var reply_content = reply.val();
 			var board_no = $("#boardNo").val();
 			
 			writeReply( board_no, reply_writer, reply_content );
 // 			test( board_no, reply_writer, reply_content );
+			$('.replySize').text(replySize()+1);
 			
 		});
 		
 		
 		// 댓글 수정 버튼 클릭 이벤트
 		$('.btnReplyModify').on('click', function() {
-			var reply_list = $(this).parent();
-			reply_list.children('div').remove();
+			var reply_list = $(this).parent().parent();
+			reply_list.children('div').remove('.re_write_wrap'); 
 			var reply_no = $(this).attr('data');
-			var reply_writer = reply_list.children('.replyWriter').text();
+			console.log(reply_list.children('.info').find('.replyWriter').text());
+			var reply_writer = $(this).parent().siblings('.info').children('.replyWriter').text();
 			var reply_content = reply_list.children('.replyContent').text();
-			
-			var edtitor = "<div class='reply_modify clfix'> "
-						+ "<input type='text' name='replyWriter' class='replyWriter' value=" + reply_writer + " >"
-						+ "<textarea rows='4' cols='' class='w-100'>" + reply_content + "</textarea>"
-						+ "<button type='button' class='btn btn_reply btnReplyRegister' data='" + reply_no + "'>등록</button>"
-						+ "</div>"
+
+			var edtitor = "<div class='re_write_wrap'> "
+				+ "<h3>댓글 수정하기</h3>"
+				+ "<textarea rows='3' cols='' class='w-100'>" + reply_content + "</textarea>"
+				+ "<div class='writer_info'>"
+				+ "<input type='text' name='replyWriter' class='writer replyWriter' value=" + reply_writer + " >"
+				+ "<input type='button' value='댓글수정' class='btn_reply btnReplyRegister' data='" + reply_no + "'>"
+				+ "</div>"
+				+ "</div>"
 						
 			reply_list.append(edtitor);
 						
@@ -76,8 +81,8 @@
 				var btn = $(this);
 				var reply_no = btn.attr('data');
 				var board_no = $('#boardNo').val();
-				var reply_writer = btn.parent().children('input').val();
-				var reply_content = btn.parent().children('textarea').val();
+				var reply_writer = btn.siblings('.replyWriter').val();
+				var reply_content = btn.parent().parent().children('textarea').val();
 				
 				console.log('reply_no : ' + reply_no);
 				console.log('reply_writer : ' + reply_writer);
@@ -93,10 +98,21 @@
 		$('.btnReplyRemove').on('click', function() {
 			var reply_no = $(this).attr('data');
 			var board_no = $('#boardNo').val();
+			//reply_size = $('.reply_box').length;
+			//$('.replySize').text(reply_size);
 			
 			removeReply(reply_no, board_no);
+			
+			$('.replySize').text(replySize()-1);
+			
 		});
 		
+		//댓글 개수 구하기
+		function replySize(){
+			reply_size = $('.reply_box').length;
+			console.log(reply_size);
+			return reply_size;
+		}
 		
 		
 		
@@ -141,13 +157,6 @@
 				$(".attachList").append(str);
 			});
 			
-// 			$('.attachList').slick({
-// 				  slidesToShow: 1,
-// 				  slidesToScroll: 1,
-// 				  arrows: true,
-// 				  autoplay: true,
-// 				  autoplaySpeed: 2000,
-// 			});
 			
 			
 		});
@@ -308,12 +317,28 @@
             </div><!-- //board_btn_area -->
 
             <div class="reply_wrap">
-              <div class="reply_cnt">댓글 <b>2</b>개</div>
+              <div class="reply_cnt">댓글 <b th:text="${replyList.size()}" class="replySize">2</b>개</div>
 
-              <div class="reply_list reply2">
-
-                <div class="reply_box">
-                  <div class="profile">
+              <div class="reply_list reply2" id="replyList">
+              
+				<div class="reply_box" th:each="reply:${replyList}">
+					<div class="profile">
+			          <img src="images/sub/story/profile_test.png" alt="">
+			        </div>
+			        <div class="info">
+			        	<p class="name replyWriter" th:text=${reply.writer}></p>
+			        	<p class="date replyDate" th:text="${#dates.format(reply.regDate, 'yyyy-MM-dd')}"></p>
+			        </div>
+					<div class="text replyContent" th:text=${reply.content}></div>
+					<div class="btn"  th:if="${reply.writer == userId}">
+			           <a href="javascript:;" title="" class="re_reply">댓글</a>
+			           <a href="javascript:;" title="" class="re_write btnReplyModify" th:data="${reply.replyNo}">수정</a>
+			           <a href="javascript:;" title="" class="re_delete btnReplyRemove"  th:data="${reply.replyNo}">삭제</a>
+			         </div>			
+				</div>
+				
+               <!--<div class="reply_box">
+                   <div class="profile">
                     <img src="images/sub/story/profile_test.png" alt="">
                   </div>
                   <div class="info">
@@ -327,8 +352,8 @@
                     <a href="javascript:;" title="" class="re_reply">댓글</a>
                     <a href="javascript:;" title="" class="re_write">수정</a>
                     <a href="javascript:;" title="" class="re_delete">삭제</a>
-                  </div>
-                  <div class="re_write_wrap">
+                  </div> -->
+                  <!-- <div class="re_write_wrap">
                     <h3>댓글 수정하기</h3>
                     <textarea rows="3" class="w100"></textarea>
                     <div class="writer_info">
@@ -338,9 +363,10 @@
 
                       <input type="button" name="" value="댓글수정" class="btn_reply">
                     </div>
-                  </div>
-                  <!-- //re_write_wrap 수정시 노출 -->
-                </div><!-- //reply_box -->
+                  </div> 
+
+                </div>-->
+                 <!-- 
                 <div class="reply_box reply_as">
                   <div class="profile">
                     <img src="images/sub/story/profile_test.png" alt="">
@@ -363,8 +389,8 @@
                     <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw">
                     <input type="button"  name="" value="확인" class="btn_chk">
                   </div>
-                  <!-- //reply_chk_pw -->
-                </div><!-- //reply_box -->
+                  //reply_chk_pw
+                </div>//reply_box
 
                 <div class="reply_box">
                   <div class="profile">
@@ -394,19 +420,19 @@
                       <input type="button" name="" value="취소" class="btn_cancel">
                       <input type="button" name="" value="답변등록" class="btn_reply">
                     </div>
-                  </div><!-- //re_write_wrap -->
-                </div><!-- //reply_box -->
+                  </div>//re_write_wrap
+                </div>//reply_box -->
 
               </div><!-- //reply_list -->
               
-              <div class="reply_write">
-                <textarea rows="3" class="w100"></textarea>
+              <div class="reply_write" th:if="${userId != null}">
+                <textarea rows="3" class="w100" id="replyContent" placeholder="댓글입력"></textarea>
                 <div class="writer_info">
-                  <input type="text" name="" maxlength="10" placeholder="글쓴이" class="writer">
-                  <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw">
+                  <input type="text" name="replyWriter" maxlength="10" th:value="${userId}" id="replyWriter" class="writer" readonly="readonly">
+<!--                   <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw"> -->
                   <input type="text" name="" placeholder="홈페이지" class="reply_url">
 
-                  <input type="button" name="" value="댓글등록" class="btn_reply">
+                  <input type="button" name="" value="댓글등록" id="btnReplyRegister" class="btn_reply">
                 </div>
               </div><!-- //reply_write -->
             </div><!-- //reply_wrap -->
