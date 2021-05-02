@@ -36,10 +36,10 @@ $(document).ready(function() {
   $board_redel.on('click',function(){
     $(this).siblings('.btn_redel').addClass(class_on);
   });
-  $board_redel.on('blur',function(){
+ /* $board_redel.on('blur',function(){
     $(this).siblings('.btn_redel').removeClass(class_on);
   });
-
+*/
   $('.detail_write_wrap .img_view li').on('click',function(){
   
   	if( $(this).find('.uploadImg').attr('src') == '/image/no_img.png' ) {

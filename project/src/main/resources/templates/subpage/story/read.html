@@ -254,7 +254,9 @@
 	
 </script>
 	<div class="content_wrap">
-
+		<form th:action="@{remove}" method="post" enctype="multipart/form-data">
+			<input type="hidden" id="boardNo" name="boardNo" th:value="${story.boardNo}"/>
+		</form>
 		<div class="sub_title type2">
             <em class="date" th:text="${#dates.format(story.regDate, 'yyyy-MM-dd HH:mm:ss')}">2020.10.10 00:00:00</em>
             <h4 class="title" th:text="${story.title}">#2021 #리뉴얼 #UI/UX #Design</h4>
@@ -295,9 +297,9 @@
                 </div>
               </div>
               <div class="tag">
-                <a href="javascript:;" title="">#일상</a>
-                <a href="javascript:;" title="">#리뉴얼</a>
-                <a href="javascript:;" title="">#웹디자인</a>
+              	<th:block  th:each="tag : ${tagList}">
+              		<a href="javascript:;" title="" th:text="${tag.name}"></a>
+              	</th:block>
               </div>
             </div><!-- //board_etc -->
 

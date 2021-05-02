@@ -25,7 +25,6 @@ public class StoryServiceImpl implements StoryService {
 	@Override
 	public void register(Story story) throws Exception {
 		mapper.create(story);
-		
 	}
 
 	@Override

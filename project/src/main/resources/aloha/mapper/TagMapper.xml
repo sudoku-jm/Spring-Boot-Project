@@ -4,12 +4,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="aloha.mapper.TagMapper">
-	<!-- tag -->
+	<!-- 태그 등록 -->
 	<insert id="createTag">
 		<selectKey resultType="int" keyProperty="boardNo" order="BEFORE">
-	        SELECT MAX(board_no) FROM ${table}        
+	        SELECT MAX(board_no) FROM ${tableName}  
 	    </selectKey>  
-		INSERT INTO tags ( table, board_no, name ) 
-					VALUES ( #{table},#{boardNo}, #{name} )
+	    <![CDATA[
+		INSERT INTO tag( board_no, table_name, name ) 
+					VALUES ( #{boardNo}, #{tableName}, #{name} )
+	    ]]>
 	</insert>
+	
+	<!-- 태그 조회 -->
+	<select id="readTagList" resultType="tag">
+		SELECT *
+		FROM tag
+		WHERE table_name = #{tableName}
+			AND board_no = #{boardNo}
+	</select>
+	
 </mapper>

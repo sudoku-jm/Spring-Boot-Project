@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ import aloha.domain.StoryAttach;
 import aloha.domain.Tag;
 import aloha.domain.Page;
 import aloha.domain.Reply;
+import aloha.service.FileService;
 import aloha.service.StoryService;
 import aloha.service.TagService;
 import aloha.util.MediaUtils;
@@ -128,11 +130,16 @@ public class StoryController {
 		
 		// [파일 업로드]
 		MultipartFile[] files = story.getFile();
-		if(thumbnailNo != null)
+		if(thumbnailNo != null) {			
 			story.setThumbnail( files[thumbnailNo-1] );
+			files[thumbnailNo-1] = null;
+		}
 		
 		// file 정보 확인
 		for (MultipartFile file : files) {
+			if(file == null || file.isEmpty()) {
+				continue;
+			}
 			log.info("originalName : " + file.getOriginalFilename());
 			log.info("size : " + file.getSize());
 			log.info("contentType : " + file.getContentType());
@@ -147,13 +154,12 @@ public class StoryController {
 		
 		// 썸네일이 있으면 추가
 		if( thumbnail != null && !thumbnail.isEmpty() ) {
-
 			// thumbnail 정보 확인
 			log.info("#### [썸네일] ####");
 			log.info("originalName : " + thumbnail.getOriginalFilename());
 			log.info("size : " + thumbnail.getSize());
 			log.info("contentType : " + thumbnail.getContentType());
-			
+		
 			StoryAttach thumbnailAttach = uploadFile(thumbnail);
 			thumbnailAttach.setCategory("thumbnail");
 			attachList.add(thumbnailAttach);
@@ -173,8 +179,15 @@ public class StoryController {
        log.info(tags);
        // #데이트, #데일리   ,   #맛   집,   #테스트 
        String[] tagArr = tags.replaceAll(" ", "").split(",");
+       HashSet<String> tagSet = new HashSet<String>();
+       
+       //tagArr(중복포함)->tagSet(중복제거)
+       for(String tag : tagArr) {
+    	   tagSet.add(tag);
+       }
       
-       for (String tag : tagArr) {
+       for (String tag : tagSet) {
+    	  // log.info(tag);
     	   tagService.createTag(new Tag("story",tag));//생성자 등록
        }
 	      
@@ -207,6 +220,10 @@ public class StoryController {
 		if( writerId.equals(userId) ) {
 			model.addAttribute("set", true);//작성자일 경우만 수정,삭제 노출
 		}
+		
+		//태그 조회
+		model.addAttribute("tagList",tagService.readTagList(new Tag("story",boardNo)) );
+					
 		
 		// 조회 수 증가
 		service.view(boardNo);
@@ -385,7 +402,7 @@ public class StoryController {
 		
 		// 업로드 경로에 파일 복사
 		// 파일 존재여부 확인
-		if( file.isEmpty() ) {
+		if( file.isEmpty()) {
 			return null;
 		}
 		
@@ -421,7 +438,7 @@ public class StoryController {
 		// 업로드 경로에 파일 복사
 		for (MultipartFile file : files) {
 			// 파일 존재여부 확인
-			if( file.isEmpty() ) {
+			if( file == null || file.isEmpty() ) {
 				continue;
 			}
 			
