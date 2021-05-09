@@ -2,6 +2,8 @@ package aloha.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import aloha.domain.Story;
 import aloha.domain.StoryAttach;
 import aloha.domain.Page;
@@ -68,7 +70,10 @@ public interface StoryService {
 	public void replyRemove(Integer reply_no) throws Exception;
 	
 	// [썸네일] 파일경로 조회
-	public List<String> getAttach(Integer boardNo) throws Exception;
+	public List<String> getFullName(Integer boardNo) throws Exception;
+	
+	// [썸네일] 파일경로 조회
+	public List<StoryAttach> getAttach(Integer boardNo) throws Exception;
 	
 	// 그룹번호 수정
 	public void updateGroupNo(Story board) throws Exception;
@@ -94,4 +99,6 @@ public interface StoryService {
 	// 썸네일 가져오기
 	public StoryAttach readThumbnail(Integer boardNo) throws Exception;
 	
+	// 썸네일 변경하기
+	public void updateThumbnailNo(Integer boardNo, Integer thumbnailNo) throws Exception;
 }

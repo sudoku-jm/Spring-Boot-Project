@@ -59,8 +59,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<selectKey resultType="int" keyProperty="boardNo" order="BEFORE">
 	        SELECT MAX(board_no) FROM story        
 	    </selectKey>  
-		INSERT INTO story_attach ( full_name, file_name, board_no, category ) 
-					VALUES ( #{fullName}, #{fileName}, #{boardNo}, #{category} )
+		INSERT INTO story_attach ( full_name, file_name, board_no, category, seq) 
+					VALUES ( #{fullName}, #{fileName}, #{boardNo}, #{category}, #{seq} )
 	</insert>
 	
 	
@@ -162,11 +162,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</delete>
 	
 	
-	<select id="getAttach" resultType="string">
+	<select id="getFullName" resultType="string">
 		SELECT  full_name
 		FROM 	story_attach
 		WHERE 	board_no = #{boardNo}
-		ORDER BY reg_date
+		ORDER BY seq
+	</select>
+	
+	<select id="getAttach" resultType="StoryAttach">
+		SELECT  *
+		FROM 	story_attach
+		WHERE 	board_no = #{boardNo}
+		ORDER BY seq
 	</select>
 	
 	
@@ -224,6 +231,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE board_no = #{boardNo}
 	</update>
 
+	<!-- 기존 섬네일 취소하기 -->
+	<update id="cancelThumbnail">
+		UPDATE story_attach
+		SET category = #{category}
+		WHERE board_no = #{boardNo}
+			AND category = 'thumbnail'
+	</update>
 	
-
+	<!-- 대표이미지(thumbnail) 변경 -->
+	<update id="updateThumbnailNo">
+		UPDATE storu_attach
+		SET seq = 0
+			,categoay = 'thumbnail'
+		WHERE board_no = #{boardNo}
+			AND seq = #{thumbnailNo}
+	</update>
+	
+	<!-- 첨부파일 순서 초기화 -->
+	<update id="initSeq">
+		UPDATE stroy_attach
+		SET seq = seq + 1
+		WHERE board_no = #{boardNo}
+			AND seq < #{thumbnailNo}
+			AND category != 'thumbnail'
+	</update>
+	
+	
+	
 </mapper>

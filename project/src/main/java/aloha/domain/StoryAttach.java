@@ -14,5 +14,6 @@ public class StoryAttach {
 	private int boardNo;
 	private Date regDate;
 	private Date updDate;
+	private int seq;
 	
 }

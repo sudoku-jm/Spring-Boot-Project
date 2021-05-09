@@ -113,7 +113,12 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
-	public List<String> getAttach(Integer boardNo) throws Exception {
+	public List<String> getFullName(Integer boardNo) throws Exception {
+		return mapper.getFullName(boardNo);
+	}
+	
+	@Override
+	public List<StoryAttach> getAttach(Integer boardNo) throws Exception {
 		return mapper.getAttach(boardNo);
 	}
 
@@ -155,6 +160,20 @@ public class StoryServiceImpl implements StoryService {
 	@Override
 	public StoryAttach readThumbnail(Integer boardNo) throws Exception {
 		return mapper.readThumbnail(boardNo);
+	}
+
+	@Override
+	public void updateThumbnailNo(Integer boardNo, Integer thumbnailNo) throws Exception {
+		// 기존 category:thumbnail인 첨부파일을 contentType으로 지정(임시 : "img" )
+		mapper.cancelThumbnail(boardNo,"img");
+
+		// 새 섬네일로 지정
+		mapper.updateThumbnailNo(boardNo, thumbnailNo);
+		
+		
+		// 새로 지정한 thumbnailNo 이외에 나머지 첨부파일의 seq를 1,2,3,4로 수정
+		mapper.initSeq(boardNo,thumbnailNo);
+		
 	}
 
 }

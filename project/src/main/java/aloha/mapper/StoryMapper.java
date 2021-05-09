@@ -3,6 +3,7 @@ package aloha.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import aloha.domain.Story;
 import aloha.domain.StoryAttach;
@@ -70,7 +71,10 @@ public interface StoryMapper {
 		public void replyDelete(Integer reply_no) throws Exception;
 		
 		// [썸네일] 파일경로 조회
-		public List<String> getAttach(Integer boardNo) throws Exception;
+		public List<String> getFullName(Integer boardNo) throws Exception;
+		
+		// [썸네일] 파일경로 조회
+		public List<StoryAttach> getAttach(Integer boardNo) throws Exception;
 			
 		// 그룹번호 수정
 		public void updateGroupNo(Story story) throws Exception;
@@ -99,4 +103,13 @@ public interface StoryMapper {
 		
 		// 썸네일 가져오기
 		public StoryAttach readThumbnail(Integer boardNo) throws Exception;
+		
+		// 썸네일 변경하기
+		public void updateThumbnailNo(@Param("boardNo") Integer boardNo, @Param("thumbnailNo") Integer thumbnailNo) throws Exception;
+		
+		// StoryAttach - category수정하기
+		public void cancelThumbnail(@Param("boardNo") Integer boardNo, @Param("category") String category) throws Exception;
+		
+		//
+		public void initSeq(@Param("boardNo") Integer boardNo,@Param("thumbnailNo") Integer thumbnailNo)  throws Exception;
 }

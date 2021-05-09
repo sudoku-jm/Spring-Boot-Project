@@ -162,6 +162,7 @@ public class StoryController {
 		
 			StoryAttach thumbnailAttach = uploadFile(thumbnail);
 			thumbnailAttach.setCategory("thumbnail");
+			/* thumbnailAttach.setSeq(0); */
 			attachList.add(thumbnailAttach);
 		} else {
 			// 기본 이미지?
@@ -258,13 +259,25 @@ public class StoryController {
 		model.addAttribute("files", service.readFileList(boardNo) );
 		model.addAttribute("thumbnail", service.readThumbnail(boardNo));
 		
+		//태그 조회
+		List<Tag> tagList = tagService.readTagList(new Tag("story",boardNo));
+		String strTagList = "";
+		
+		for(int i=0;i<tagList.size();i++) {
+			strTagList += tagList.get(i).getName();
+			if(i!=tagList.size() - 1) { // 마지막태그 제외 "," 넣어줌
+				strTagList += ",";
+			}
+		}
+		model.addAttribute("tagList",strTagList );
+		
 		return "subpage/story/modify";
 	}
 	
 	
 	// 게시글 수정 처리
 	@PostMapping("/modify")
-	public String modify(Model model, Story story, Integer[] deleteNo) throws Exception {
+	public String modify(Model model, Story story, Integer[] deleteNo,Integer thumbnailNo, String tags) throws Exception {
 		Integer boardNo = story.getBoardNo();
 		
 		// 선택한 파일 DB에서 삭제
@@ -330,6 +343,12 @@ public class StoryController {
 			attach.setBoardNo(story.getBoardNo());
 			service.uploadModifyFile(attach);
 		}
+		
+		//대표(thumbnail)변경
+		if(thumbnailNo != 0) {
+			service.updateThumbnailNo(boardNo,thumbnailNo);
+		}
+		
 
 		model.addAttribute("msg", "수정이 완료되었습니다.");
 		return "subpage/story/success";
@@ -431,6 +450,7 @@ public class StoryController {
 	
 	
 	// 다중 파일 업로드 
+	int index = 1;
 	private ArrayList<StoryAttach> uploadFiles(MultipartFile[] files) throws IOException {
 		
 		ArrayList<StoryAttach> attachList = new ArrayList<StoryAttach>();
@@ -460,6 +480,7 @@ public class StoryController {
 			attach.setFullName(uploadPath + "/" + uploadFileName);	// 업로드 파일 전체경로
 			attach.setFileName(originalFileName);					// 파일명
 			attach.setCategory(file.getContentType());				// 카테고리(파일종류)
+			attach.setSeq(index++);
 			attachList.add(attach);
 			
 		}
@@ -594,7 +615,7 @@ public class StoryController {
 	// 첨부파일 경로 가져오기
 	@RequestMapping(value = "/getAttach/{boardNo}")
 	@ResponseBody
-	public List<String> getAttach(@PathVariable("boardNo") Integer boardNo ) throws Exception {
+	public List<StoryAttach> getAttach(@PathVariable("boardNo") Integer boardNo ) throws Exception {
 		log.info("getAttach boardNo : " + boardNo);
 		
 		return service.getAttach(boardNo);
