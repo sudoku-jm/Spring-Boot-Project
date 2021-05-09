@@ -12,4 +12,6 @@ public interface FileService {
 	//파일 목록 조회
 	public List<FileAttach> readFileList(Integer boardNo,String table) throws Exception;
 		
+	//파일 조회
+	public FileAttach readFile(Integer fileNo,String table)throws Exception;
 }

@@ -2,6 +2,8 @@ package aloha.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,10 @@ import aloha.mapper.StoryMapper;
 
 @Service
 public class StoryServiceImpl implements StoryService {
+	
+	
+	private static final Logger log = LoggerFactory.getLogger(StoryServiceImpl.class);
+
 
 	@Autowired
 	private StoryMapper mapper;
@@ -164,6 +170,11 @@ public class StoryServiceImpl implements StoryService {
 
 	@Override
 	public void updateThumbnailNo(Integer boardNo, Integer thumbnailNo) throws Exception {
+		
+		log.info("boardNo : " + boardNo);
+		log.info("thumbnailNo : " + thumbnailNo);
+
+		
 		// 기존 category:thumbnail인 첨부파일을 contentType으로 지정(임시 : "img" )
 		mapper.cancelThumbnail(boardNo,"img");
 

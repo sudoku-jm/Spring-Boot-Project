@@ -131,8 +131,8 @@ public class StoryController {
 		// [파일 업로드]
 		MultipartFile[] files = story.getFile();
 		if(thumbnailNo != null) {			
-			story.setThumbnail( files[thumbnailNo-1] );
-			files[thumbnailNo-1] = null;
+			story.setThumbnail( files[thumbnailNo] );	// 섬네일 가져오기
+			files[thumbnailNo] = null;				//섬네일 중복 업로드 방지
 		}
 		
 		// file 정보 확인
@@ -311,14 +311,14 @@ public class StoryController {
 		// [썸네일 정보]
 		MultipartFile thumbnail = story.getThumbnail();
 		
-		// thumbnail 정보 확인
-		log.info("#### [썸네일] ####");
-		log.info("originalName : " + thumbnail.getOriginalFilename());
-		log.info("size : " + thumbnail.getSize());
-		log.info("contentType : " + thumbnail.getContentType());
 		
 		// 썸네일이 있으면 추가
-		if( !thumbnail.isEmpty() ) {
+		if( thumbnail != null && !thumbnail.isEmpty() ) {
+			// thumbnail 정보 확인
+			log.info("#### [썸네일] ####");
+			log.info("originalName : " + thumbnail.getOriginalFilename());
+			log.info("size : " + thumbnail.getSize());
+			log.info("contentType : " + thumbnail.getContentType());
 			// 기존 썸네일이 있으면 삭제
 			StoryAttach oldThumbnail = service.readThumbnail(boardNo);
 			if( oldThumbnail != null ) {

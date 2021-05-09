@@ -241,20 +241,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 대표이미지(thumbnail) 변경 -->
 	<update id="updateThumbnailNo">
-		UPDATE storu_attach
+		UPDATE story_attach
 		SET seq = 0
-			,categoay = 'thumbnail'
+			,category = 'thumbnail'
 		WHERE board_no = #{boardNo}
 			AND seq = #{thumbnailNo}
 	</update>
 	
 	<!-- 첨부파일 순서 초기화 -->
 	<update id="initSeq">
-		UPDATE stroy_attach
-		SET seq = seq + 1
-		WHERE board_no = #{boardNo}
-			AND seq < #{thumbnailNo}
-			AND category != 'thumbnail'
+		<![CDATA[
+			UPDATE story_attach
+			SET seq = seq + 1
+			WHERE board_no = #{boardNo}
+				AND seq < #{thumbnailNo}
+				AND category != 'thumbnail'
+		]]>
 	</update>
 	
 	

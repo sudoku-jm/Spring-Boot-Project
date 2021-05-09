@@ -17,6 +17,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE board_no = #{boardNo}
 		AND category != 'thumbnail'
 	</select>
-
+	
+	<!-- 파일 조회 -->
+	<select id="readFile" resultType="fileAttach">
+		SELECT *
+		FROM ${table}
+		WHERE file_no = #{fileNo}
+	</select>
 
 </mapper>

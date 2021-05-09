@@ -24,4 +24,9 @@ public class FileServiceImpl implements FileService {
 		return mapper.readFileList(boardNo, table);
 	}
 
+	@Override
+	public FileAttach readFile(Integer fileNo, String table) throws Exception {
+		return mapper.readFile(fileNo,table);
+	}
+
 }

@@ -199,6 +199,19 @@ public class FileController {
 		log.info(fileAttach + "");
 		// 파일 삭제
 		String fullName = fileAttach.getFullName();
+		Integer fileNo = fileAttach.getFileNo();
+		String table = fileAttach.getTable();
+		
+		//fileNo 없으면..
+		
+		//fullName 없으면 조회
+		if(fullName == null) {
+			fileAttach = fileService.readFile(fileNo,"story_attach");
+			fullName = fileAttach.getFullName();
+			fileAttach.setTable(table);
+		}
+		
+		
 		File file = new File(fullName);
 		
 		// 실제로 파일이 존재하는 확인

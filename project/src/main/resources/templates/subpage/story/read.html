@@ -142,15 +142,16 @@
 				
 				var data = this;		// 파일 경로
 				var str = "";
+				var fullName = data.fullName;
 				
-				if(checkImageType(data)){
-					str = "<div><a href='/file/displayFile?fileName=" + data + "'>"
-						+ "<img src='/file/displayFile?fileName=" + data + "'/>"
+				if(checkImageType(fullName)){
+					str = "<div><a href='/file/displayFile?fileName=" + fullName + "'>"
+						+ "<img src='/file/displayFile?fileName=" + fullName + "'/>"
 						+ "</a></div>";
 				}
 				else{
-					str = "<div><a href='/file/displayFile?fileName=" + data + "'>" 
-						+ getOriginalName(data) + "</a>"
+					str = "<div><a href='/file/displayFile?fileName=" + fullName + "'>" 
+						+ getOriginalName(fullName) + "</a>"
 						+ "</div></div>";
 				}
 			  
