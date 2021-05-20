@@ -199,6 +199,7 @@ public class FileController {
 		log.info(fileAttach + "");
 		// 파일 삭제
 		String fullName = fileAttach.getFullName();
+		Integer boardNo = fileAttach.getBoardNo();
 		Integer fileNo = fileAttach.getFileNo();
 		String table = fileAttach.getTable();
 		

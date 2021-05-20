@@ -17,5 +17,8 @@ public interface FileMapper {
 	public List<FileAttach> readFileList(@Param("boardNo") Integer boardNo,@Param("table") String table) throws Exception;
 	
 	//파일 조회
-	public FileAttach readFile(@Param("fileNo") Integer fileNo,@Param("table") String table)throws Exception;
+	public FileAttach readFile(@Param("fileNo") Integer fileNo,@Param("table") String table) throws Exception;
+
+	//수정 시, seq 갱신
+	public void initUpdateSeq(FileAttach fileAttach) throws Exception;
 }

@@ -110,6 +110,9 @@ public interface StoryMapper {
 		// StoryAttach - category수정하기
 		public void cancelThumbnail(@Param("boardNo") Integer boardNo, @Param("category") String category) throws Exception;
 		
-		//
+		//첨부파일 순서 초기화
 		public void initSeq(@Param("boardNo") Integer boardNo,@Param("thumbnailNo") Integer thumbnailNo)  throws Exception;
+		
+		//seq 최댓값 조회
+		public int maxSeqByBoardNo(@Param("boardNo") Integer boardNo) throws Exception;
 }

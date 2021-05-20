@@ -16,6 +16,10 @@ public class FileServiceImpl implements FileService {
 	
 	@Override
 	public void deleteFile(FileAttach fileAttach) throws Exception {
+		// 해당 파일 seq 보다 큰 애들 -1시켜줌
+		// seq > #{seq},seq = seq - 1
+		mapper.initUpdateSeq(fileAttach);
+		
 		mapper.deleteFile(fileAttach);
 	}
 

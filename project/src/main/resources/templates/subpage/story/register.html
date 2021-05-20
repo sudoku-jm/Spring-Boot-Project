@@ -23,13 +23,15 @@
 			// 등록 버튼 클릭 이벤트
 			$('#btnRegister').on('click',function(){
 				
-				// validate
-// 				if( validate() ){
-					form.attr('action', 'register');
-					form.attr('method', 'post');
-					form.submit();
-// 				} 
-				
+				var thumbnailNo = $("[name='thumbnailNo']:checked").val();
+				if(thumbnailNo == undefined || thumbnailNo == null){
+					alert("대표사진을 선택해주세요.");
+					return;
+				}
+				form.attr('action', 'register');
+				form.attr('method', 'post');
+				form.submit();
+
 				
 			});
 	

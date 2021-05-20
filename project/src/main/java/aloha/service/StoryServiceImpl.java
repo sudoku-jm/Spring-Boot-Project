@@ -187,4 +187,9 @@ public class StoryServiceImpl implements StoryService {
 		
 	}
 
+	@Override
+	public int maxSeqByBoardNo(Integer boardNo) throws Exception {
+		return mapper.maxSeqByBoardNo(boardNo);
+	}
+
 }

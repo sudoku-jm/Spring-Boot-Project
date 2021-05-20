@@ -102,4 +102,6 @@ public interface StoryService {
 	// 썸네일 변경하기
 	public void updateThumbnailNo(Integer boardNo, Integer thumbnailNo) throws Exception;
 	
+	//seq 최댓값 조회
+	public int maxSeqByBoardNo(Integer boardNo) throws Exception;
 }

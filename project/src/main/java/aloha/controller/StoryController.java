@@ -248,7 +248,7 @@ public class StoryController {
 			userId = user.getName();
 			model.addAttribute("userId", userId);
 		}
-		Story story = service.read(boardNo);
+		Story story = service.read(boardNo); //boardNo로 해당 게시물 객체가져옴
 		String writerId = story.getWriter();
 		if( !writerId.equals(userId) ) {
 			return "redirect:/error/noAuth";
@@ -338,10 +338,22 @@ public class StoryController {
 		
 		service.modify(story);
 		
+		//해당 게시글 첨부파일의 seq 최대값 조회
+		Integer maxSeq = service.maxSeqByBoardNo(boardNo);
+		
+		if( maxSeq == null) 	
+			maxSeq = 0;
+		
+		
 		// 첨부파일 등록
 		for (StoryAttach attach : attachList) {
-			attach.setBoardNo(story.getBoardNo());
-			service.uploadModifyFile(attach);
+			
+			if( !attach.getCategory().equals("thumbnail")) { //썸네일이 아닌 이미지들 경우
+				attach.setSeq(++maxSeq); // 최대seq에서 증가
+			}
+			
+			attach.setBoardNo(story.getBoardNo()); // 스토리 게시판 boardNo를 stoey_attach 객체 boardNo로 불러옴 
+			service.uploadModifyFile(attach); // 파일 수정 업로드
 		}
 		
 		//대표(thumbnail)변경
@@ -450,10 +462,13 @@ public class StoryController {
 	
 	
 	// 다중 파일 업로드 
-	int index = 1;
 	private ArrayList<StoryAttach> uploadFiles(MultipartFile[] files) throws IOException {
 		
 		ArrayList<StoryAttach> attachList = new ArrayList<StoryAttach>();
+		
+
+		int index = 1;
+
 		
 		// 업로드 경로에 파일 복사
 		for (MultipartFile file : files) {

@@ -65,8 +65,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	
 	<insert id="uploadUpdateFile" parameterType="StoryAttach">
-		INSERT INTO story_attach ( full_name, file_name, category, board_no ) 
-					VALUES ( #{fullName}, #{fileName}, #{category}, #{boardNo} )
+		INSERT INTO story_attach ( full_name, file_name, category, board_no ,seq) 
+					VALUES ( #{fullName}, #{fileName}, #{category}, #{boardNo} ,#{seq} )
 	</insert>
 
 
@@ -258,6 +258,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND category != 'thumbnail'
 		]]>
 	</update>
+	
+	<!-- maxSeqByBoardNo -->
+	<select id="maxSeqByBoardNo" resultType="int">
+		SELECT MAX(seq)
+		FROM story_attach
+		WHERE board_no = #{boardNo}
+	</select>
 	
 	
 	

@@ -24,5 +24,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM ${table}
 		WHERE file_no = #{fileNo}
 	</select>
-
+	
+	<!-- 수정 시,seq 갱신 -->
+	<update id="initUpdateSeq">
+		UPDATE ${table}
+		SET seq = seq - 1
+		WHERE board_no = #{boardNo}
+		AND seq > #{seq}
+	</update>
 </mapper>

@@ -16,5 +16,6 @@ public class FileAttach {
 	private Date updDate;
 	
 	private String table;
+	private int seq;
 	
 }
