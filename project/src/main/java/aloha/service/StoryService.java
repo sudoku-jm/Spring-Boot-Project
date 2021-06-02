@@ -104,4 +104,9 @@ public interface StoryService {
 	
 	//seq 최댓값 조회
 	public int maxSeqByBoardNo(Integer boardNo) throws Exception;
+
+	//댓글 개수
+	public int replyCount(Integer boardNo) throws Exception;
+	
+	
 }

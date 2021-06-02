@@ -16,6 +16,9 @@
 	<script src="/js/jquery-3.5.1.min.js"></script>
 	<script src="/js/sub.js"></script>
 	<script>
+	
+	 	_fileCount = 0; 		// 파일 개수
+	 	
 		$(document).ready(function() {
 			
 			var form = $('#board');
@@ -23,11 +26,21 @@
 			// 등록 버튼 클릭 이벤트
 			$('#btnRegister').on('click',function(){
 				
+				var title = $("[name='title']").val();
 				var thumbnailNo = $("[name='thumbnailNo']:checked").val();
-				if(thumbnailNo == undefined || thumbnailNo == null){
+				
+				//제목 유효성 검사
+				if( title == undefined || title == null || title == ""){
+					alert("제목을 입력해주세요.");
+					return;
+				}
+				
+				//파일(이미지) 유효성 검사
+				if( _fileCount != 0 && ( thumbnailNo == undefined || thumbnailNo == null) ){
 					alert("대표사진을 선택해주세요.");
 					return;
 				}
+				
 				form.attr('action', 'register');
 				form.attr('method', 'post');
 				form.submit();
@@ -62,6 +75,7 @@
 			
 			var index = 0;
 			var length = files.length;
+
 			
 			if( length > 5 ){
 				alert("최대 5개  jpeg, jpg, gif, png 확장자만 지원합니다.");
@@ -79,6 +93,8 @@
 				reader.readAsDataURL(files[i]);
 				console.log(files[i]);	
 			}
+
+		 	_fileCount = length;
 
 			
 		}

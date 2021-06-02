@@ -30,7 +30,7 @@
 		
 		// 삭제 버튼 클릭 이벤트
 		$('#btnRemove').on('click',function(){
-			form.attr("action", "/subpage/gallery/remove");
+			form.attr("action", "/subpage/story/remove");
 			form.attr("method", "post");
 			form.submit();
 		});
@@ -264,7 +264,7 @@
 	
 </script>
 	<div class="content_wrap">
-		<form th:action="@{remove}" method="post" enctype="multipart/form-data">
+		<form id="board" th:action="@{remove}" method="post" enctype="multipart/form-data">
 			<input type="hidden" id="boardNo" name="boardNo" th:value="${story.boardNo}"/>
 		</form>
 		<div class="sub_title type2">
@@ -302,8 +302,10 @@
               <div class="board_redel">
                 <a href="javascript:;" title="" class="redel"></a>
                 <div class="btn_redel">
-                  <a href="javascript:;" title="" id="btnModify">수정</a>
-                  <a href="javascript:;" title="" id="btnRemove">삭제</a>
+                <th:block th:if="${set}"><!-- 작성자 본인만 수정/삭제 가능 -->
+	                 <a href="javascript:;" title="" id="btnModify">수정</a>
+	                 <a href="javascript:;" title="" id="btnRemove">삭제</a>
+				</th:block>
                 </div>
               </div>
               <div class="tag">

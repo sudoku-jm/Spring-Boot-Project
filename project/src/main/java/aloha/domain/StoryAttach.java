@@ -16,4 +16,5 @@ public class StoryAttach {
 	private Date updDate;
 	private int seq;
 	
+	
 }

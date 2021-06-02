@@ -2,6 +2,7 @@ package aloha.controller;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import aloha.domain.BoardAttach;
 import aloha.domain.FileAttach;
@@ -276,6 +280,24 @@ public class FileController {
 		return entity;
 	}
 	
+	
+	//파일업로드
+	@RequestMapping(value = "/uploadFile",method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
+	public String uploadFile(MultipartFile file) throws Exception{
+
+		
+		return "subpage/board/success";
+	}
+	
+	// 비동기 처리
+   @ResponseBody
+   @RequestMapping(value = "/uploadAjax", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
+   public void uploadAjax(MultipartFile file) throws Exception {
+      log.info("originalName: " + file.getOriginalFilename());
+      
+      
+      //return new ResponseEntity<String>("test", HttpStatus.CREATED);
+   }
 }
 
 

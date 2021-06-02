@@ -21,6 +21,8 @@
 			var pageCount = "[[${page.pageCount}]]";
 			var keyword = "[[${page.keyword}]]";
 			
+			var lastPage = "[[${page.lastPage}]]";
+			
 			
 			// 페이지당 게시글 수 초기화
 			$("#rowsPerPage option[value=" + rowsPerPage + "]").attr("selected", "selected");
@@ -54,6 +56,24 @@
 			});
 			
 			
+			// 페이지 변경 이벤트
+			$('#page_input').on('change',function(){
+				var inputPageNum = $(this).val();
+				
+				if( inputPageNum >= 1 && inputPageNum <= lastPage){					
+					location.href = "/subpage/story/list?pageNum=" 	 + inputPageNum
+																	 + "&totalCount=" + totalCount 
+																	 + "&rowsPerPage=" + rowsPerPage
+																	 + "&pageCount=" + pageCount
+																	 + "&keyword=" + keyword;
+				}else{
+					alert("존재하지 않는 페이지이거나 이동할 수 없습니다.");
+					$(this).val(pageNum);
+				}
+					
+			});
+			
+			
 		});
 		
 </script>
@@ -82,7 +102,7 @@
                     <p class="title" th:text=${story.title}></p>
                   </div>
                   <div class="cnt_wrap">
-                    <span class="cnt_reply">1</span>
+                    <span class="cnt_reply" th:text="${story.replyCount}">1</span>
                     <span class="cnt_view" th:text="${story.view}"></span>
                   </div>
                 </a>
@@ -90,17 +110,26 @@
             </ul>
           </div><!-- //board_wrap -->
 
-          <div class="paging_story">
-            <a href="javascript:;" title="첫 페이지" class="first">첫 페이지</a>
-            <a href="javascript:;" title="이전" class="prev">이전</a>
-            <div class="paging_input">
-              <input type="text" name="" value="1">
-              of <em class="paging_total">3</em>
-            </div>
-            <a href="javascript:;" title="다음" class="next">다음</a>
-            <a href="javascript:;" title="끝 페이지" class="last">끝 페이지</a>
-          </div>
-	
+
+		<!-- paging -->
+		  <div th:object="${page}" class="paging_story">
+		
+				<a th:href="|list?pageNum=*{firstPage}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" title="첫 페이지" class="first">첫 페이지</a>
+				<th:block th:if="${page.prev > 0 }">
+					<a th:href="|list?pageNum=*{prev}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" title="이전"  class="prev">이전</a>
+				</th:block>	
+				<div class="paging_input">
+					<input type="text" name="" th:value="${page.pageNum}" id="page_input">
+					of <em class="paging_total" th:text="${page.lastPage}">3</em>
+				</div>
+				<th:block th:if="${page.next <= page.lastPage }">
+					<a th:href="|list?pageNum=*{next}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" title="다음" class="next">다음</a>
+				</th:block>
+				<a th:href="|list?pageNum=*{lastPage}&totalCount=*{totalCount}&rowsPerPage=*{rowsPerPage}&pageCount=*{pageCount}&keyword=*{keyword}|" title="끝 페이지" class="last">끝 페이지</a>
+		
+			</div><!--paging_story  -->
+		
+		
 	</div>
 </div>
 </body>

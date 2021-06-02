@@ -45,7 +45,7 @@ public class StoryServiceImpl implements StoryService {
 
 	@Override
 	public void remove(Integer boardNo) throws Exception {
-		mapper.read(boardNo);
+		mapper.delete(boardNo);
 	}
 
 	@Override
@@ -190,6 +190,11 @@ public class StoryServiceImpl implements StoryService {
 	@Override
 	public int maxSeqByBoardNo(Integer boardNo) throws Exception {
 		return mapper.maxSeqByBoardNo(boardNo);
+	}
+
+	@Override
+	public int replyCount(Integer boardNo) throws Exception {
+		return mapper.replyCount(boardNo);
 	}
 
 }

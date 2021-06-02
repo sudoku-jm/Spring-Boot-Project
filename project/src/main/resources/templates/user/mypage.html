@@ -1,0 +1,51 @@
+
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{/layouts/main_template}"
+	  >
+<head>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+	<div class="join_wrap">
+	   <h2>마이페이지</h2>
+	
+		<div style="height:500px"></div>
+		<form id="member" action="list.html" th:action="@{/user/register}" th:object="${member}" method="POST">
+	      <table>
+	      	<colgroup>
+			 <col style="width:20%">
+			 <col style="width:auto">		 
+			 </colgroup>
+	         <tr>
+	            <th>아이디</th>
+	            <td><input type="text" name="userId" th:field="*{userId}" /></td>
+	         </tr>
+	         <tr>
+	            <th>비밀번호</th>
+	            <td><input type="password" name="userPw" th:field="*{userPw}" /></td>
+	         </tr>
+	         <tr>
+	            <th>사용자명</th>
+	            <td><input type="text" name="userName" th:field="*{userName}" /></td>
+	         </tr>
+	      </table>
+	   </form>
+	   
+	   <div class="btn_box">
+	      <button type="submit" id="btnRegister" class="btn btn_submit">등록</button>
+	      
+	      <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+	         <button type="submit" id="btnList" class="btn btn_black">목록</button>
+	      </th:block>
+		</div>
+		
+	</div>
+</div>
+</body>
+</html>

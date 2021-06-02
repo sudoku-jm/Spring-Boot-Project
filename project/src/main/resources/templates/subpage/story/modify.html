@@ -30,20 +30,25 @@
 			$('#btnModify').on('click',function(){
 				
 				//파일버퍼 확인
-			/* 	$.each(_fileBuffer,function(index, item){
+				/* $.each(_fileBuffer,function(index, item){
 					console.log(index + ":" +item);
 					console.log(JSON.stringify(item));
-					console.dir(item);
-				}); */
+					console.dir(item); */
 				
-				var thumbnailNo = $("[name='thumbnailNo']:checked").val();
+				//파일버퍼에 있는 item이 File 객체인 경우(새로 추가한 파일)
+				/* 	if(item instanceof File){
+						uploadFile(item);
+					}
+				});  */
+				
+ 				var thumbnailNo = $("[name='thumbnailNo']:checked").val();
 				if(thumbnailNo == undefined || thumbnailNo == null){
 					alert("대표사진을 선택해주세요.");
 					return;
 				}
  				form.attr('action', 'modify');
 				form.attr('method', 'post');
-				form.submit();
+				form.submit(); 
   				
 			});
 	
@@ -157,13 +162,46 @@
 		// 파일선택 변경 이벤트
 		function fileInputChange(event) {
 
-			var files = event.target.files; //input 파일 가져오기
+			var files = event.target.files; 
+			//input 파일 가져오기
 			var filesArr = Array.prototype.slice.call(files);
 			
-			var index = _fileBuffer.length; // 기존 파일수 넣어줌
-			var length = _fileBuffer.length + files.length; // 기존파일개수 + 새로추가한거 (현재 파일 개수 + 추가 파일 개수)
+			var index = _fileBuffer.length; 
+			// 기존 파일수 넣어줌
+			var length = _fileBuffer.length + files.length; 
+			// 기존파일개수 + 새로추가한거 (현재 파일 개수 + 추가 파일 개수)
 			
 			//alert("기존 파일수 : " + _fileCount + ", 추가한 파일수 :" + files.length);
+
+						
+			
+			/* ********************************* */
+		/* 	var file = files[0];
+			var formData = new FormData();
+			formData.append("file",file); */
+			
+			 // AJAX 비동기 처리
+	         /* $.ajax ({
+	            url         : "/uploadAjax",
+	            data      : formData,   
+	            dataType   : "text",
+	            processData   : false,
+	            contentType   : false,
+	            type      : "POST",
+	            
+	            success: function(data) {
+	               // 썸네일 처리
+	               console.log(data);
+	            },
+	            
+	            error: function(request, status, error) {
+	               
+	            }
+	            
+	         }); */
+
+			
+			/* ********************************* */
 			
 			if( length > 5 ){
 				alert("최대 5개  jpeg, jpg, gif, png 확장자만 지원합니다.");
@@ -269,7 +307,37 @@
 			});
 		}
 		
-		/* 남은것 : _fileBuffer의 정보 업로드 하기 */
+		//비동기 파일 업로드
+		function uploadFile(file){
+			
+			var boardNo = $("#boardNo").val();
+			var fileData = new FormData();
+
+			fileData.append('file',file);
+			
+
+			$.ajax({
+				
+				url : '/file/uploadFile',	//request 보낼 서버의 경로
+				type : 'get',				//메소드(get,post,put 등)
+				enctype : 'multipart/form-data',
+				cache : false,
+				contentType : false,
+				processData : false,
+				dataType : 'text',
+				data : fileData,
+				success : function(){
+
+				},
+				error : function(request,status,error){
+					alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+			        
+				}
+				
+			});
+		}
+		
+
 	</script>
 
 	<div class="content_wrap">

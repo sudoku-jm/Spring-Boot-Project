@@ -100,7 +100,16 @@ public class StoryController {
 		
 		if( keyword == null || keyword == "" ) {
 			page.setKeyword("");
-			model.addAttribute("list", service.list(page));
+			
+			//댓글 갯수
+			List<Story> listStory = service.list(page);
+			
+			for(int i = 0 ;i < listStory.size(); i++) {	
+				Integer boardNo = listStory.get(i).getBoardNo();
+				Integer replyCount = service.replyCount(boardNo);
+				listStory.get(i).setReplyCount(replyCount);
+			}
+			model.addAttribute("list", listStory);
 		} else {
 			page.setKeyword(keyword);
 			model.addAttribute("list", service.search(page));
@@ -374,25 +383,8 @@ public class StoryController {
 		// 게시글에 첨부한 파일 삭제
 		deleteFiles(attachList);
 		
-		
-		int groupNo = service.readGroupNo(boardNo);
-		log.info("groupNo : " + groupNo);
-		
-		// 답글이 달려있는지 확인
-		int groupCount = service.countAnswer(groupNo);
-		
-		if( groupCount > 1 ) {
-			Story story = new Story();
-			story.setBoardNo(boardNo);
-			story.setTitle("삭제된 글입니다");
-			story.setContent("-");
-			story.setWriter("-");
-			service.modify(story);
-		} else {
-			service.remove(boardNo);
-		}
- 		
-		
+		service.remove(boardNo);
+
 		model.addAttribute("msg", "삭제가 완료되었습니다.");
 		return "subpage/story/success";
 	}

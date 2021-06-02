@@ -31,4 +31,5 @@ public class Story {
 	
 	private int thumbnailNo;			// 썸네일 이미지 번호
 		
+	private int replyCount;				//댓글개수
 }

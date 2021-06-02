@@ -115,4 +115,8 @@ public interface StoryMapper {
 		
 		//seq 최댓값 조회
 		public int maxSeqByBoardNo(@Param("boardNo") Integer boardNo) throws Exception;
+		
+		//댓글 개수
+		public int replyCount(@Param("boardNo") Integer boardNo) throws Exception;
+		
 }

@@ -2,6 +2,8 @@ package aloha.domain;
 
 import java.util.Date;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Data;
 
 @Data
@@ -18,4 +20,5 @@ public class FileAttach {
 	private String table;
 	private int seq;
 	
+	private MultipartFile file;
 }

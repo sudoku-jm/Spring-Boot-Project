@@ -74,7 +74,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * 
 		FROM story_attach
 		WHERE board_no = #{boardNo}
-		 AND category != 'thumbnail'
 	</select>
 	
 	<select id="readThumbnail" resultType="StoryAttach">
@@ -124,8 +123,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					FROM dual
 				 ) tmp
 				 ,story g
-				  LEFT JOIN ( SELECT * FROM story_attach WHERE category = "thumbnail" ) thumbnail
-				  ON g.board_no = thumbnail.board_no
+				  LEFT JOIN ( SELECT * FROM story_attach WHERE category = "thumbnail" ) thumbnail ON g.board_no = thumbnail.board_no
 			ORDER BY group_no DESC
 			        ,seq_no ASC
 			        ,depth_no ASC
@@ -267,5 +265,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	
+	<!-- 댓글개수 -->
+	<select id="replyCount" resultType="int">
+		SELECT COUNT(*) as reply_count
+		FROM story_reply
+		WHERE board_no = #{boardNo}
+	</select>
 	
 </mapper>
