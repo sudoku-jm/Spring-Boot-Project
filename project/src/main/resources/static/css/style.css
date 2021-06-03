@@ -284,3 +284,39 @@ background-repeat: no-repeat; border:1px solid #ececec;vertical-align: top;font-
 .reply_chk_pw{text-align: center;}
 .reply_chk_pw h5,.re_write_wrap h3{margin:5px 0 10px 0;font-size:15px;color:#777;}
 .reply_chk_pw .btn_chk{padding:10px 15px;background:#555;color:#fff;}
+
+
+/* 마이페이지 */
+.profile_wrap{margin:0 auto;width:1200px;border:1px solid #ccc;}
+.profile_wrap .profile_box{float:left;width:150px;height:200px;border:1px solid pink;}
+.profile_wrap .profile_box .img_frame{overflow: hidden;}
+.profile_wrap .profile_box .img_frame img{width:100%;}
+
+.profile_wrap .upload_box{padding:30px;float:right;width:calc(100% - 20%);height:200px;border:1px solid blue;box-sizing: border-box;text-align: center;}
+.profile_wrap .file_list{clear:both;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

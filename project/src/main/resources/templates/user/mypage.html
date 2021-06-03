@@ -15,7 +15,27 @@
 	<div class="join_wrap">
 	   <h2>마이페이지</h2>
 	
-		<div style="height:500px"></div>
+		<div class="profile_wrap">
+		
+			<div class="profile_box">
+				<div class="img_frame">
+					<img id="profile" src="" alt="">
+				</div>
+			</div>
+			
+			<div class="upload_box">
+				<h3>파일명</h3>
+				<p>(0.00MB)</p>
+				<a href="" title="삭제">삭제</a>
+			</div>
+			
+			<ul class="file_list">
+				
+			</ul>
+			
+		</div><!-- //profile_wrap -->
+		
+		
 		<form id="member" action="list.html" th:action="@{/user/register}" th:object="${member}" method="POST">
 	      <table>
 	      	<colgroup>
