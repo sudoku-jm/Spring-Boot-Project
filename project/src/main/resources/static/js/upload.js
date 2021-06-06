@@ -16,6 +16,9 @@
  	
  	// 등록 가능한 총 파일 사이즈 MB
  	var maxUploadSize = 500;
+ 	
+ 	
+ 	var test = 10000;
  
  $(function() {
  
