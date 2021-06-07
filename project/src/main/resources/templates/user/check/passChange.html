@@ -1,0 +1,33 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layouts/single_template}">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<style>
+		.popup_wrap { margin: 0 auto; padding: 100px 50px; width: 500px; height: 100%; text-align: center; box-sizing: border-box; }
+		
+		.popup_wrap h2 { margin-bottom: 30px;}
+		
+		.input_lg { width: 60%; margin: 10px 0;  font-size: 2rem; }
+		
+		button { display: block; margin: 5px 0; width: 60%; }
+	</style>
+</head>
+<body>
+<div layout:fragment="content">
+	<div class="popup_wrap">
+		<h2>비밀번호 변경</h2>
+		
+		<form th:action="@{/user/check/passChage}" method="post">
+			<input type="password" name="password" class="input_lg">
+			<input type="password" name="password" class="input_lg">
+			<button type="submit" class="btn btn_submit">변경</button>
+			<button type="button" class="btn btn_submit" onclick="window.close();">취소</button>
+		</form>
+	</div>
+</div>
+</body>
+</html>

@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -298,6 +299,23 @@ public class FileController {
       
       //return new ResponseEntity<String>("test", HttpStatus.CREATED);
    }
+   
+    // 프로필 업로드
+	@PostMapping("/profileUpload") 
+	public String handleFileUpload( @RequestParam("fileupload") MultipartFile file ) {
+	  
+		  String fileName = file.getOriginalFilename();
+		  try {
+			  file.transferTo( new File("C:\\upload\\" + fileName));
+		  } catch (Exception e) {
+			  
+		  } 
+		  return "redirect:/user/mypage";
+	 }
+	
+	
+   
+   
 }
 
 
