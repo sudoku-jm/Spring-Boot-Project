@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import aloha.domain.Member;
 import aloha.domain.MemberAuth;
+import aloha.domain.MemberImg;
 import aloha.mapper.MemberMapper;
 
 @Service
@@ -35,6 +36,23 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member read(String userId) throws Exception {
 		return mapper.read(userId);
+	}
+
+	@Override
+	public void updateProfile(MemberImg img) throws Exception {
+		// 대표 프로필 사진이 있는지?
+		int profileCount = mapper.checkProfile(img);
+		img.setCategory("thumbnail");
+		
+		boolean checkProfile = profileCount > 0 ? true : false;
+		
+		// 대표 프로필 있으면 update
+		if( checkProfile ) {
+			// 새로 변경할 이미지는 추가.
+			// 기존 대표 프로필은 category 데이터를 thumbnail에서 img로 변경
+			mapper.updateProfile(img);
+		}
+		mapper.insertProfile(img);
 	}
 	
 	

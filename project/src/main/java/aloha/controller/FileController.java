@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -22,12 +23,14 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,8 +41,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import aloha.domain.BoardAttach;
 import aloha.domain.FileAttach;
+import aloha.domain.MemberImg;
+import aloha.domain.StoryAttach;
 import aloha.service.BoardService;
 import aloha.service.FileService;
+import aloha.service.MemberService;
 import aloha.util.MediaUtils;
 
 @Controller
@@ -47,11 +53,18 @@ import aloha.util.MediaUtils;
 public class FileController {
 	
 	
+	// 업로드 경로
+	@Value("${upload.path}")
+	private String uploadPath;
+	
 	private static final Logger log = LoggerFactory.getLogger(FileController.class);
 
 	
 	@Autowired
 	private BoardService service;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	@Autowired
 	private FileService fileService;
@@ -282,14 +295,7 @@ public class FileController {
 	}
 	
 	
-	//파일업로드
-	@RequestMapping(value = "/uploadFile",method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
-	public String uploadFile(MultipartFile file) throws Exception{
 
-		
-		return "subpage/board/success";
-	}
-	
 	// 비동기 처리
    @ResponseBody
    @RequestMapping(value = "/uploadAjax", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
@@ -302,16 +308,62 @@ public class FileController {
    
     // 프로필 업로드
 	@PostMapping("/profileUpload") 
-	public String handleFileUpload( @RequestParam("fileupload") MultipartFile file ) {
-	  
-		  String fileName = file.getOriginalFilename();
-		  try {
-			  file.transferTo( new File("C:\\upload\\" + fileName));
-		  } catch (Exception e) {
-			  
-		  } 
+	public String handleFileUpload( @RequestParam("profile") MultipartFile file, @RequestParam("userNo") Integer userNo) throws Exception {
+
+		// file 정보 확인
+		if( !file.isEmpty() ) {
+			
+			log.info("originalName : " + file.getOriginalFilename());
+			log.info("size : " + file.getSize());
+			log.info("contentType : " + file.getContentType());
+		
+		} else {
+			log.info("업로드 요청한 파일이 존재하지 않습니다.");
+			return "redirect:/user/mypage";
+		}
+
+		
+		MemberImg img = (MemberImg) uploadFile(file);
+		img.setUserNo(userNo);
+		memberService.updateProfile(img);
+		  
 		  return "redirect:/user/mypage";
 	 }
+	
+	
+
+	// 단일 파일 업로드 
+	private Object uploadFile(MultipartFile file) throws IOException {
+		
+		// 업로드 경로에 파일 복사
+		// 파일 존재여부 확인
+		if( file.isEmpty()) {
+			return null;
+		}
+		
+		// 파일명 중복 방지를 위한 고유 ID 생성
+		UUID uid = UUID.randomUUID();
+		
+		// 실제 원본 파일 이름
+		String originalFileName =  file.getOriginalFilename();
+		
+		// UID_강아지.png
+		String uploadFileName = uid.toString() + "_" + originalFileName;
+		
+		// 업로드 폴더에 업로드할 파일 복사 (upload)
+		byte[] fileData = file.getBytes();
+		File target = new File(uploadPath, uploadFileName);
+		FileCopyUtils.copy(fileData, target);
+		
+		MemberImg img = new MemberImg();
+
+		img.setFullName(uploadPath + "/" + uploadFileName);	// 업로드 파일 전체경로
+		img.setFileName(originalFileName);					// 파일명
+		img.setCategory(file.getContentType());              // 카테고리(파일종류)
+		
+		return img;
+	}
+	
 	
 	
    
