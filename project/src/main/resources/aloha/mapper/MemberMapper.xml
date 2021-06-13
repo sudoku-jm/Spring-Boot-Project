@@ -87,13 +87,26 @@
    </select>
    
    
+   <!-- 비밀번호 확인 -->
+   <select id="checkPassword" resultType="member">
+   		SELECT *
+   		FROM member
+   		WHERE user_id = #{userId}
+   </select>
+   
+   <!-- 비밀번호 변경 -->
+   <update id="changePassword">
+   		UPDATE member
+   		SET user_pw = #{userPw}
+   		WHERE user_id = #{userId}
+   </update>
    
    <!-- 대표 프로필 체크 -->
    <select id="checkProfile" resultType="int">
    		SELECT COUNT(*)
-   		FORM member_img
+   		FROM member_img
    		WHERE user_no = #{userNo}
-   			AND category = 'thumbnail';
+   			AND category = 'thumbnail'
    </select>
    
     <!-- 대표 프로필 변경 -->
@@ -107,7 +120,7 @@
      <!-- 대표 프로필 추가 -->
      <insert id="insertProfile">
      	INSERT INTO member_img ( user_no, category, full_name, file_name )
-     		VALUES( #{userNo}, #{category}, #{full_name}, #{fileName} )
+     		VALUES( #{userNo}, #{category}, #{fullName}, #{fileName} )
      </insert>
    
 </mapper>

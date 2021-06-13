@@ -17,6 +17,11 @@ public class Member {
 	private String auth;
 	
 	private List<MemberAuth> authList;
+	
+	public Member(String userId, String userPw) {
+		this.userId  = userId;
+		this.userPw = userPw;
+	}
 }
 
 

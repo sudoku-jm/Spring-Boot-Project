@@ -66,7 +66,7 @@ function fileDropDown() {
 		
 	});
 	
-	$("#fileupload").on("change", function(e){
+	$("#btnProfile").on("change", function(e){
 		e.preventDefault();				//
 		// 드롭다운 영역 css
 		$(".upload_box").css('background-color', '#caf7e3');

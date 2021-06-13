@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -81,7 +82,83 @@ public class MemberController {
 		
 		model.addAttribute("member",member);
 		
+				
+	}
+	
+	
+	@GetMapping("/check/passCheck")
+	public void passCheckPopup(Model model) throws Exception{
 		
+	}
+	
+	@PostMapping("/check/passCheck")
+	public String passCheck(Model model, String password, Principal user, RedirectAttributes rttr) throws Exception{
+		
+		String userId = "";
+		if(user != null) {
+			userId = user.getName();
+			model.addAttribute("userId", userId);
+			
+		}else{
+			return "redirect:/popup/close";
+		}
+		
+		
+		log.info("password : " + password);
+		String userPw = password;
+		Member member = new Member(userId, userPw);
+		
+		log.info("userPw : " + userPw);
+		
+		boolean check = service.checkPassword(member);
+		
+		if( check ) {
+			rttr.addFlashAttribute("check", check);
+			return "redirect:/user/check/passChange";
+		}else {
+			rttr.addFlashAttribute("check", check);
+			return "redirect:/user/check/passCheck";
+		}
+		
+		
+	}
+	
+	
+	@GetMapping("/check/passChange")
+	public void passChangePopup(Model model) throws Exception{
+		
+	}
+	
+	@PostMapping("/check/passChange")
+	public String passChange(Model model, String password, String passwordCheck, Principal user, RedirectAttributes rttr) throws Exception{
+		
+		boolean check = false;
+		
+		String userId = "";
+		if(user != null) {
+			userId = user.getName();
+			model.addAttribute("userId", userId);
+			
+		}else{
+			return "redirect:/popup/close";
+		}
+		
+		//비밀번호 , 비밀번호 확인 일치할 경우
+		if( password.equals(passwordCheck) ) {
+			check = true;
+			Member member = new Member(userId, password);
+			service.changePassword(member);
+			
+			rttr.addFlashAttribute("msg", "비밀번호 변경이 완료되었습니다.");
+			return "redirect:/popup/close";
+		}
+		
+		//일치하지 않을 경우
+		else {
+			check = false;
+			rttr.addFlashAttribute("check", check);
+			return "redirect:/user/check/passChange";
+		}
 		
 	}
 	

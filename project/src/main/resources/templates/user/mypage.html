@@ -26,8 +26,8 @@
 					<form id="uploadForm" th:action="@{/file/profileUpload}" method="post" enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input type="hidden" name="userNo" th:value="${member.userNo}" />
-						<label class="upload_label btn btn_submit" for="fileupload">업로드</label>
-						<input id="profile" type="file" name="profile" class="upload_input" /> 
+						<label class="upload_label btn btn_submit" for="btnProfile">업로드</label>
+						<input id="btnProfile" type="file" name="profile" class="upload_input" /> 
 					</form>
 				</div>
 			</div>
@@ -45,11 +45,9 @@
 			                   <label for=""></label>
 			                 </div>
 						</div>
-					</li>
-
-					
+					</li>				
 				</ul>
-			</div>
+			</div><!-- //profile_list -->
 			
 			<div class="txtr">
 				<a href="javascript:;" title="" class="btn btn_submit mrt10" id="btnUpdateProfile">프로필 변경</a>
@@ -69,7 +67,7 @@
 						</colgroup>
 						<tr>
 							<th>아이디</th>
-							<td><input type="text" name="userId" th:field="*{userId}" /></td>
+							<td><input type="text" name="userId" th:field="*{userId}" readonly="readonly" disabled="disabled"/></td>
 						</tr>
 						<tr>
 							<th>비밀번호</th>

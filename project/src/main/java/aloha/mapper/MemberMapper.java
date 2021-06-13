@@ -20,6 +20,13 @@ public interface MemberMapper {
 	
 	public Member read(String userId) throws Exception;
 	
+	
+	//비밀번호 확인
+	public Member checkPassword(Member member) throws Exception;
+	
+	//비밀번호 변경
+	public void changePassword(Member member) throws Exception;
+	
 	// 대표 프로필 사진 체크
 	public int checkProfile(MemberImg img) throws Exception;
 	

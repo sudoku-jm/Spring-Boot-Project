@@ -21,9 +21,9 @@
 	<div class="popup_wrap">
 		<h2>비밀번호 변경</h2>
 		
-		<form th:action="@{/user/check/passChage}" method="post">
+		<form th:action="@{/user/check/passChange}" method="post">
 			<input type="password" name="password" class="input_lg">
-			<input type="password" name="password" class="input_lg">
+			<input type="password" name="passwordCheck" class="input_lg">
 			<button type="submit" class="btn btn_submit">변경</button>
 			<button type="button" class="btn btn_submit" onclick="window.close();">취소</button>
 		</form>
