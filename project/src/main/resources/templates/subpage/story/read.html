@@ -338,102 +338,17 @@
 			           <a href="javascript:;" title="" class="re_write btnReplyModify" th:data="${reply.replyNo}">수정</a>
 			           <a href="javascript:;" title="" class="re_delete btnReplyRemove"  th:data="${reply.replyNo}">삭제</a>
 			         </div>			
-				</div>
+				</div><!-- //reply_box -->
 				
-               <!--<div class="reply_box">
-                   <div class="profile">
-                    <img src="images/sub/story/profile_test.png" alt="">
-                  </div>
-                  <div class="info">
-                    <p class="name">test</p>
-                    <p class="date">2021.12.12 00:00</p>
-                  </div>
-                  <div class="text">
-                    테스트 댓글입니다.
-                  </div>
-                  <div class="btn">
-                    <a href="javascript:;" title="" class="re_reply">댓글</a>
-                    <a href="javascript:;" title="" class="re_write">수정</a>
-                    <a href="javascript:;" title="" class="re_delete">삭제</a>
-                  </div> -->
-                  <!-- <div class="re_write_wrap">
-                    <h3>댓글 수정하기</h3>
-                    <textarea rows="3" class="w100"></textarea>
-                    <div class="writer_info">
-                      <input type="text" name="" maxlength="10" placeholder="글쓴이" class="writer">
-                      <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw">
-                      <input type="text" name="" placeholder="홈페이지" class="reply_url">
-
-                      <input type="button" name="" value="댓글수정" class="btn_reply">
-                    </div>
-                  </div> 
-
-                </div>-->
-                 <!-- 
-                <div class="reply_box reply_as">
-                  <div class="profile">
-                    <img src="images/sub/story/profile_test.png" alt="">
-                  </div>
-                  <div class="info">
-                    <p class="name">test</p>
-                    <p class="date">2021.12.12 00:00</p>
-                  </div>
-                  <div class="text">
-                    테스트 댓글입니다.
-                  </div>
-                  <div class="btn">
-                    <a href="javascript:;" title="" class="re_reply">댓글</a>
-                    <a href="javascript:;" title="" class="re_write">수정</a>
-                    <a href="javascript:;" title="" class="re_delete">삭제</a>
-                  </div>
-
-                  <div class="reply_chk_pw">
-                    <h5>비밀번호를 입력해주세요</h5>
-                    <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw">
-                    <input type="button"  name="" value="확인" class="btn_chk">
-                  </div>
-                  //reply_chk_pw
-                </div>//reply_box
-
-                <div class="reply_box">
-                  <div class="profile">
-                    <img src="images/sub/story/profile_test.png" alt="">
-                  </div>
-                  <div class="info">
-                    <p class="name">test22</p>
-                    <p class="date">2021.12.12 00:00</p>
-                  </div>
-                  <div class="text">
-                    테스트 댓글입니다.222
-                  </div>
-                  <div class="btn">
-                    <a href="javascript:;" title="" class="re_reply">댓글</a>
-                    <a href="javascript:;" title="" class="re_write">수정</a>
-                    <a href="javascript:;" title="" class="re_delete">삭제</a>
-                  </div>
-
-                  <div class="re_write_wrap reply_write_as">
-                    <h3>답변달기</h3>
-                    <textarea rows="3" class="w100"></textarea>
-                    <div class="writer_info">
-                      <input type="text" name="" maxlength="10" placeholder="글쓴이" class="writer">
-                      <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw">
-                      <input type="text" name="" placeholder="홈페이지" class="reply_url">
-
-                      <input type="button" name="" value="취소" class="btn_cancel">
-                      <input type="button" name="" value="답변등록" class="btn_reply">
-                    </div>
-                  </div>//re_write_wrap
-                </div>//reply_box -->
 
               </div><!-- //reply_list -->
               
-              <div class="reply_write" th:if="${userId != null}">
+              <div class="reply_write" th:if="${memberInfo!= null && memberInfo.nickname != null}">
                 <textarea rows="3" class="w100" id="replyContent" placeholder="댓글입력"></textarea>
                 <div class="writer_info">
-                  <input type="text" name="replyWriter" maxlength="10" th:value="${userId}" id="replyWriter" class="writer" readonly="readonly">
+                  <input type="text" name="replyWriter" maxlength="10" th:value="${memberInfo.nickname}" id="replyWriter" class="writer" readonly="readonly">
 <!--                   <input type="password" name="" maxlength="4" placeholder="비밀번호" class="reply_pw"> -->
-                  <input type="text" name="" placeholder="홈페이지" class="reply_url">
+                  <input type="text" name="" placeholder="홈페이지" th:value="${memberInfo.url}" class="reply_url">
 
                   <input type="button" name="" value="댓글등록" id="btnReplyRegister" class="btn_reply">
                 </div>

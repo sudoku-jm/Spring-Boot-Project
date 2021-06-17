@@ -327,7 +327,7 @@ public class FileController {
 		img.setUserNo(userNo);
 		memberService.updateProfile(img);
 		  
-		  return "redirect:/user/mypage";
+		return "redirect:/user/mypage";
 	 }
 	
 	

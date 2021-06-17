@@ -14,13 +14,14 @@
    <h2>회원 등록</h2>
    
    <form id="member" action="list.html" th:action="@{/user/register}" th:object="${member}" method="POST">
+      <h3>필수 정보</h3>
       <table>
       	<colgroup>
 		 <col style="width:20%">
 		 <col style="width:auto">		 
 		 </colgroup>
          <tr>
-            <th>아이디</th>
+            <th>아이디 </th>
             <td><input type="text" name="userId" th:field="*{userId}" /></td>
          </tr>
          <tr>
@@ -31,10 +32,35 @@
             <th>사용자명</th>
             <td><input type="text" name="userName" th:field="*{userName}" /></td>
          </tr>
+         <tr>
+            <th>닉네임</th>
+            <td><input type="text" name="nickname" /></td>
+         </tr>
       </table>
+      
+      
+      <h3>부가 정보</h3>
+      <table>
+      	<colgroup>
+		 <col style="width:20%">
+		 <col style="width:auto">		 
+		 </colgroup>
+         <tr>
+            <th>이메일</th>
+            <td><input type="text" name="email"  /></td>
+         </tr>
+         <tr>
+            <th>홈페이지</th>
+            <td><input type="text" name="url"/></td>
+         </tr>
+ 
+      </table>
+      
+      
    </form>
    
    <div class="btn_box">
+   		
       <button type="submit" id="btnRegister" class="btn btn_submit">등록</button>
       
       <th:block sec:authorize="hasRole('ROLE_ADMIN')">

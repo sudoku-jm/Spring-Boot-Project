@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import aloha.domain.Member;
+import aloha.domain.MemberImg;
+import aloha.domain.MemberInfo;
 import aloha.service.MemberService;
 
 @Controller
@@ -42,7 +44,13 @@ public class MemberController {
 
 	// 회원가입 처리
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String register(@Validated Member member, BindingResult result, Model model, RedirectAttributes rttr) throws Exception {
+	public String register(@Validated Member member,MemberInfo memberInfo, BindingResult result, Model model, RedirectAttributes rttr) throws Exception {
+		
+		/*
+		 * @Validated 유효성 검사 후. 예) 최소 4글자부터~ 영문자,숫자만 가능합니다~ 등... 메세지 리턴.
+		 * BindingResult 유효성 문제 있을 경우 , 다시 돌아 가게끔
+		 * */
+		
 		if(result.hasErrors()) {
 			return "user/register";
 		}
@@ -50,8 +58,8 @@ public class MemberController {
 		String inputPassword = member.getUserPw();
 		member.setUserPw(passwordEncoder.encode(inputPassword));
 		
-		service.register(member);
-		
+		service.register(member,memberInfo);
+	
 		rttr.addFlashAttribute("userName", member.getUserName());
 		
 		return "redirect:/user/registerSuccess";
@@ -77,13 +85,37 @@ public class MemberController {
 		String userId = user.getName();			//로그인된 userId
 		
 		Member member = service.read(userId);	// 회원정보
+		int userNo = member.getUserNo();
+		MemberInfo memberInfo = service.readMemberInfo(userNo); // 회원 부가정보
+		
+		//프로필 이미지 조회
+		MemberImg memberImg = service.readProfileImg(userNo);
 		
 		log.info("member : " + member);
+		log.info("memberInfo : " + memberInfo);
+		log.info("memberImg : " + memberImg);
 		
 		model.addAttribute("member",member);
-		
+		model.addAttribute("memberInfo",memberInfo);
+		model.addAttribute("memberImg",memberImg);
+	
 				
 	}
+	
+	
+	// 회원정보 수정 처리
+	@PostMapping("/change")
+	public String profileChange(Model model,Member member,MemberInfo memberInfo) throws Exception{
+		
+		//넘어오는 정보 확인
+		log.info(member.toString());
+		log.info(memberInfo.toString());
+		
+		service.changeProfile(member,memberInfo);
+		
+		return "redirect:/user/mypage"; //수정 후 url이 change에 머물러 있지 않게 함. mypage로 돌아가게함.
+	}
+	
 	
 	
 	@GetMapping("/check/passCheck")
@@ -161,7 +193,7 @@ public class MemberController {
 		}
 		
 	}
-	
+
 	
 }
 

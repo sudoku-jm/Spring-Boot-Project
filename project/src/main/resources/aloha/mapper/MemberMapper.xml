@@ -50,6 +50,12 @@
           )
    </insert>
    
+   <!-- 회원 부가정보 등록 -->
+   <insert id="createMemberInfo">
+   		INSERT INTO member_info( user_no, nickname, email, url )
+   				VALUES ( #{userNo} , #{nickname} , #{email} , #{url} )
+   </insert>
+   
    <select id="readByUserId" resultMap="memberMap">
    	SELECT mem.user_no,
 	   		mem.user_id,
@@ -122,6 +128,42 @@
      	INSERT INTO member_img ( user_no, category, full_name, file_name )
      		VALUES( #{userNo}, #{category}, #{fullName}, #{fileName} )
      </insert>
+   
+   
+   <!-- 회원 기본정보 변경 -->
+   <update id="changeProfile">
+   		UPDATE member
+   		SET user_name = #{userName}
+   		WHERE user_id = #{userId}
+   </update>
+   
+   
+   <!-- 회원 추가정보 변경 -->
+   <update id="changeInfo">
+   		UPDATE member_info
+   		SET nickname = #{nickname}
+   			,email = #{email}
+   			,url = #{url}
+   		WHERE user_no = #{userNo}
+   </update>
+   
+   <!-- 회원 부가정보 조회  -->
+   <select id="readMemberInfo" resultType="MemberInfo">
+   		SELECT *
+   		FROM member_info
+   		WHERE user_no = #{userNo}
+   </select>
+   
+   
+   <!-- 대표 프로필 조회 -->
+   <select id="readProfileImg" resultType="MemberImg">
+   		SELECT *
+   		FROM member_img
+   		WHERE user_no = #{userNo}
+   			AND category = 'thumbnail'
+   </select>
+   
+   
    
 </mapper>
 

@@ -16,7 +16,12 @@
 				
 				<div class="profile_box">
 					<div class="img_frame">
-						<img id="profile" th:src="@{/image/no_img.png}" alt="">
+						<th:block th:if="${memberImg == null}">
+							<img id="profile" th:src="@{/image/no_img.png}" alt="">
+						</th:block>
+						<th:block th:if="${memberImg != null && memberImg.fullName != null}">
+							<img id="profile" th:src="@{|/file/displayFile?fileName=${memberImg.fullName}|}" alt="">						
+						</th:block>				
 					</div>
 				</div>
 				<div class="upload_box">
@@ -67,7 +72,7 @@
 						</colgroup>
 						<tr>
 							<th>아이디</th>
-							<td><input type="text" name="userId" th:field="*{userId}" readonly="readonly" disabled="disabled"/></td>
+							<td><input type="text" name="userId" th:field="*{userId}" readonly="readonly"/></td>
 						</tr>
 						<tr>
 							<th>비밀번호</th>
@@ -81,17 +86,21 @@
 							<td><input type="text" name="userName" th:field="*{userName}" /></td>
 						</tr>
 						<tr>
+							<th>닉네임</th>
+							<td><input type="text" name="nickname" th:value="${memberInfo.nickname}"/></td>
+						</tr>
+						<tr>
 							<th>이메일</th>
-							<td><input type="email" name="email"  /></td>
+							<td><input type="email" name="email" th:value="${memberInfo.email}" /></td>
 						</tr>
 						<tr>
 							<th>홈페이지</th>
-							<td><input type="text" name="page"  /></td>
+							<td><input type="text" name="url"  th:value="${memberInfo.url}"/></td>
 						</tr>
 					</table>
 	
 				<div class="btn_box">
-					<button type="submit" id="btnRegister" class="btn btn_submit">등록</button>
+					<button type="submit" id="btnChangeProfile" class="btn btn_submit">수정 완료</button>
 	
 					<th:block sec:authorize="hasRole('ROLE_ADMIN')">
 						<button type="submit" id="btnList" class="btn btn_black">목록</button>
@@ -113,6 +122,12 @@
 			$('#btnUpdateProfile').on('click',function(){
 				uploadForm.submit();
 			});		
+			
+			//회원 정보 수정완료 버튼 클릭 이벤트
+			$('#btnChangeProfile').on('click',function(){
+				profileForm.submit();
+			});		
+			
 			
 		});
 		

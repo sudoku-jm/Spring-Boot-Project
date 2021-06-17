@@ -32,10 +32,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import aloha.domain.Gallery;
 import aloha.domain.GalleryAttach;
+import aloha.domain.Member;
+import aloha.domain.MemberInfo;
 import aloha.domain.Page;
 import aloha.domain.Reply;
 import aloha.domain.Tag;
 import aloha.service.GalleryService;
+import aloha.service.MemberService;
 import aloha.service.TagService;
 import aloha.service.GalleryService;
 import aloha.util.MediaUtils;
@@ -54,6 +57,9 @@ public class GalleryController {
 	
 	@Autowired
 	private GalleryService service;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	@Autowired
 	private TagService tagService;
@@ -204,8 +210,16 @@ public class GalleryController {
 		String userId = "";
 		if( user != null ) {
 			userId = user.getName();
+			Member member = memberService.read(userId); // userId로 member조회
+			int userNo = member.getUserNo(); //userNo를 가져옴
+			
+			MemberInfo memberInfo = memberService.readMemberInfo(userNo);
+			
+			
 			model.addAttribute("userId", userId);
-		} else {
+			model.addAttribute("memberInfo",memberInfo);
+		}
+		 else {
 			model.addAttribute("userId", null);
 			
 		}

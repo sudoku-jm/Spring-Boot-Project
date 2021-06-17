@@ -8,7 +8,7 @@
 	<title>Insert title here</title>
 	<style>
 		.popup_wrap { margin: 0 auto; padding: 100px 50px; width: 500px; height: 100%; text-align: center; box-sizing: border-box; }
-		
+		.popup_wrap p{margin:0 auto;width:60%; font-size:14px;color:#777;}
 		.popup_wrap h2 { margin-bottom: 30px;}
 		
 		.input_lg { width: 60%; margin: 10px 0;  font-size: 2rem; }
@@ -22,10 +22,14 @@
 		<h2>비밀번호 변경</h2>
 		
 		<form th:action="@{/user/check/passChange}" method="post">
+		
+			<p class="txtl">비밀번호</p>
 			<input type="password" name="password" class="input_lg">
+			<p class="txtl">비밀번호 확인</p>
 			<input type="password" name="passwordCheck" class="input_lg">
+			
 			<button type="submit" class="btn btn_submit">변경</button>
-			<button type="button" class="btn btn_submit" onclick="window.close();">취소</button>
+			<button type="button" class="btn btn_black" onclick="window.close();">취소</button>
 		</form>
 	</div>
 </div>

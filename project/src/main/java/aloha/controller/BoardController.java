@@ -32,10 +32,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import aloha.domain.Board;
 import aloha.domain.BoardAttach;
+import aloha.domain.Member;
+import aloha.domain.MemberInfo;
 import aloha.domain.Page;
 import aloha.domain.Reply;
 import aloha.domain.Tag;
 import aloha.service.BoardService;
+import aloha.service.MemberService;
 import aloha.service.TagService;
 import aloha.util.MediaUtils;
 
@@ -52,6 +55,9 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService service;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	
 	@Autowired
@@ -178,7 +184,14 @@ public class BoardController {
 		String userId = "";
 		if( user != null ) {
 			userId = user.getName();
+			Member member = memberService.read(userId); // userId로 member조회
+			int userNo = member.getUserNo(); //userNo를 가져옴
+			
+			MemberInfo memberInfo = memberService.readMemberInfo(userNo);
+			
+			
 			model.addAttribute("userId", userId);
+			model.addAttribute("memberInfo",memberInfo);
 		}
 		
 		String writerId = board.getWriter();

@@ -33,9 +33,12 @@ import org.springframework.web.multipart.MultipartFile;
 import aloha.domain.Story;
 import aloha.domain.StoryAttach;
 import aloha.domain.Tag;
+import aloha.domain.Member;
+import aloha.domain.MemberInfo;
 import aloha.domain.Page;
 import aloha.domain.Reply;
 import aloha.service.FileService;
+import aloha.service.MemberService;
 import aloha.service.StoryService;
 import aloha.service.TagService;
 import aloha.util.MediaUtils;
@@ -54,6 +57,9 @@ public class StoryController {
 	
 	@Autowired
 	private StoryService service;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	@Autowired
 	private TagService tagService;
@@ -220,7 +226,14 @@ public class StoryController {
 		String userId = "";
 		if( user != null ) {
 			userId = user.getName();
+			Member member = memberService.read(userId); // userId로 member조회
+			int userNo = member.getUserNo(); //userNo를 가져옴
+			
+			MemberInfo memberInfo = memberService.readMemberInfo(userNo);
+			
+			
 			model.addAttribute("userId", userId);
+			model.addAttribute("memberInfo",memberInfo);
 		} else {
 			model.addAttribute("userId", null);
 			

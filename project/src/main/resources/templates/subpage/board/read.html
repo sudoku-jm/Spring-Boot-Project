@@ -329,22 +329,22 @@
 			</li>
 		</ul><!-- //reply_list -->
 		<!-- 댓글 입력 -->
-		<div class="plz_login" th:if="${userId == null}">
-			<p class="mrb10">로그인을 해야 댓글 남길 수 있습니다.</p>
-			<a th:href="@{/auth/login}" class="btn btn_login">로그인</a>
-		</div>
-		<div class="reply_txt" th:if="${userId != null}">
-			<div class="top">
-				<h3>댓글</h3>
-			</div>
-			<div class="con">
-				<input type="text" name="replyWriter" th:value="${userId}" id="replyWriter" placeholder="작성자" class="writer" readonly="readonly">
-				<textarea rows="5" cols="" placeholder="댓글 입력" class="w-100" id="replyContent" ></textarea>
-				<div class="btn_area">
-					<button type="button" id="btnReplyRegister" class="btn btn_reply">등록</button>
-				</div>
-			</div>
-		</div><!-- //reply_txt -->
+	      <div class="plz_login" th:if="${userId == null}">
+	         <p class="mrb10">로그인을 해야 댓글 남길 수 있습니다.</p>
+	         <a th:href="@{/auth/login}" class="btn btn_login">로그인</a>
+	      </div>
+	      <div class="reply_txt" th:if="${memberInfo != null && memberInfo.nickname != null}">
+	         <div class="top">
+	            <h3>댓글</h3>
+	         </div>
+	         <div class="con">
+	            <input type="text" name="replyWriter" th:value="${memberInfo.nickname}" id="replyWriter" placeholder="작성자" class="writer" readonly="readonly">
+	            <textarea rows="5" cols="" placeholder="댓글 입력" class="w-100" id="replyContent" ></textarea>
+	            <div class="btn_area">
+	               <button type="button" id="btnReplyRegister" class="btn btn_reply">등록</button>
+	            </div>
+	         </div>
+	      </div><!-- //reply_txt -->
 		
 		<div class="btn_box">
 			<a th:href="@{|answer?groupNo=${board.boardNo}|}" id="btnAnswer" class="btn sch">답글</a>

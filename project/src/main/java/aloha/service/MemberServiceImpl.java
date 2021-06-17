@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import aloha.domain.Member;
 import aloha.domain.MemberAuth;
 import aloha.domain.MemberImg;
+import aloha.domain.MemberInfo;
 import aloha.mapper.MemberMapper;
 
 @Service
@@ -21,15 +22,19 @@ public class MemberServiceImpl implements MemberService {
 	private PasswordEncoder passwordEncoder;
 	
 	@Override
-	public void register(Member member) throws Exception {
+	public void register(Member member,MemberInfo memberInfo) throws Exception {
 		mapper.create(member);
 		member = mapper.read(member.getUserId());
-		
+		int userNo = member.getUserNo();
+		//권한 추가
 		MemberAuth memberAuth = new MemberAuth();
-		memberAuth.setUserNo(member.getUserNo());
-		memberAuth.setAuth("ROLE_USER");
-		
+		memberAuth.setUserNo(userNo); //회원번호를 받아서 권한테이블에 추가
+		memberAuth.setAuth("ROLE_USER");	
 		mapper.createAuth(memberAuth);
+		
+		//회원 부가 정보 추가
+		memberInfo.setUserNo(userNo);
+		mapper.createMemberInfo(memberInfo);
 	}
 
 	@Override
@@ -48,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
 		int profileCount = mapper.checkProfile(img);
 		img.setCategory("thumbnail");
 		
-		boolean checkProfile = profileCount > 0 ? true : false;
+		boolean checkProfile = profileCount > 0 ? true : false; // 대표 사진이 있으면 true 업데이트 없으면 false
 		
 		// 대표 프로필 있으면 update
 		if( checkProfile ) {
@@ -82,6 +87,29 @@ public class MemberServiceImpl implements MemberService {
 		
 		mapper.changePassword(member);
 		
+	}
+
+	@Override
+	public void changeProfile(Member member, MemberInfo memberInfo) throws Exception {
+		mapper.changeProfile(member); //userId를 받아와서 변경
+		
+		member = mapper.read(member.getUserId());
+		int userNo = member.getUserNo();
+		memberInfo.setUserNo(userNo);
+		
+		mapper.changeInfo(memberInfo); //userNo로 변경
+		
+	}
+
+	@Override
+	public MemberInfo readMemberInfo(int userNo) throws Exception {
+		return mapper.readMemberInfo(userNo);
+	}
+
+	
+	@Override
+	public MemberImg readProfileImg(int userNo) throws Exception {
+		return mapper.readProfileImg(userNo);
 	}
 	
 	
