@@ -164,6 +164,12 @@
 		
 		
 		
+		//프로필 이미지 클릭 이벤트
+		$('.profilePopup').on('click',function(){
+			var user_no = $(this).attr("data");
+			openPopup( user_no );
+		});
+		
 	});
 	// ready (end)
 	
@@ -188,7 +194,7 @@
 		        $('#replyList').append(data);
 		        
 		        var userId = "[[${userId}]]";
-		        $('#replyWriter').val(userId);
+		       // $('#replyWriter').val(userId);
 		        $('#replyContent').val('');
 		        
 		    },
@@ -261,6 +267,21 @@
 		
 	}
 	
+	//프로필 팝업
+	function openPopup( user_no ) {
+		let width = 500;
+        let height = 600;
+        let top = (window.innerHeight - height) / 2 + screenY;
+        let left = (window.innerWidth - width) / 2 + screenX;
+
+        let spec = 'status=no, menubar=no, toolbar=no, resizable=no';
+        spec += ', width=' + width + ', height=' + height;
+        spec += ', top=' + top + ', left=' + left;
+
+        window.open('/user/profile/info?userNo=' + user_no, 'popup', spec);
+		
+	}
+	
 	
 </script>
 	<div class="content_wrap">
@@ -326,14 +347,22 @@
               
 				<div class="reply_box" th:each="reply:${replyList}">
 					<div class="profile">
-			          <img src="images/sub/story/profile_test.png" alt="">
+						<th:block th:if="${reply.fullName == null}">
+				          <img src="/image/sub/story/profile_test.png" alt="이미지가 없습니다.">
+						</th:block>
+						<th:block th:if="${reply.fullName != null}">
+							<a href="javascript:;" title="" class="profilePopup" th:data="${reply.userNo}">
+				          		<img th:src="@{|/file/displayFile?fileName=${reply.fullName}|}" alt="">
+							</a>
+						</th:block>
+			          
 			        </div>
 			        <div class="info">
 			        	<p class="name replyWriter" th:text=${reply.writer}></p>
 			        	<p class="date replyDate" th:text="${#dates.format(reply.regDate, 'yyyy-MM-dd')}"></p>
 			        </div>
 					<div class="text replyContent" th:text=${reply.content}></div>
-					<div class="btn"  th:if="${reply.writer == userId}">
+					<div class="btn"  th:if="${reply.writer == memberInfo.nickname}">
 			           <a href="javascript:;" title="" class="re_reply">댓글</a>
 			           <a href="javascript:;" title="" class="re_write btnReplyModify" th:data="${reply.replyNo}">수정</a>
 			           <a href="javascript:;" title="" class="re_delete btnReplyRemove"  th:data="${reply.replyNo}">삭제</a>
@@ -343,7 +372,7 @@
 
               </div><!-- //reply_list -->
               
-              <div class="reply_write" th:if="${memberInfo!= null && memberInfo.nickname != null}">
+              <div class="reply_write" th:if="${memberInfo != null && memberInfo.nickname != null}">
                 <textarea rows="3" class="w100" id="replyContent" placeholder="댓글입력"></textarea>
                 <div class="writer_info">
                   <input type="text" name="replyWriter" maxlength="10" th:value="${memberInfo.nickname}" id="replyWriter" class="writer" readonly="readonly">

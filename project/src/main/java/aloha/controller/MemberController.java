@@ -86,7 +86,9 @@ public class MemberController {
 		
 		Member member = service.read(userId);	// 회원정보
 		int userNo = member.getUserNo();
-		MemberInfo memberInfo = service.readMemberInfo(userNo); // 회원 부가정보
+		
+		//회원 부가정보 가져오기
+		MemberInfo memberInfo = service.readMemberInfo(userNo);
 		
 		//프로필 이미지 조회
 		MemberImg memberImg = service.readProfileImg(userNo);
@@ -112,7 +114,16 @@ public class MemberController {
 		log.info(memberInfo.toString());
 		
 		service.changeProfile(member,memberInfo);
-		
+		/*
+		 * Forward 방식 
+		 	: 사용자가 최초로 요청한 요청정보는 다음 URL에서도 유효. 
+		 	  시스템에 변화가 생기지 않는 단순 조회 요청의 경우.
+		 * Redirect 방식 
+		  	: 최초 요청을 받은 URL1에서 클라이언트에게 rediret할 URL2를 반환, 
+		  	클라이언트에서는 새로운 요청을 생성하여 URL2에 다시 요청을 보낸다. 
+		  	최초의 Request와 Respone갹체는 유효하지 않고 새롭게 생성. 
+		  	시스템에 변화가 생기는 요청의 경우에 redirection을 사용.
+		 * */
 		return "redirect:/user/mypage"; //수정 후 url이 change에 머물러 있지 않게 함. mypage로 돌아가게함.
 	}
 	
@@ -192,6 +203,11 @@ public class MemberController {
 			return "redirect:/user/check/passChange";
 		}
 		
+	}
+	
+	@GetMapping("/profile/info")
+	public void profileInfo(Model model,Integer userNo) throws Exception{
+		log.info("userNo : " + userNo);		
 	}
 
 	

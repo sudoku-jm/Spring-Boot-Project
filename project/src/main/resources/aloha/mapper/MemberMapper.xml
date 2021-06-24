@@ -79,6 +79,8 @@
    	ORDER BY reg_date DESC
    </select>
    
+   <!-- 회원정보 불러오기 -->
+   <!-- resultMap : DB필드값과 객체의 변수명이 다를때 사용한다. -->
    <select id="read" resultMap="memberMap">
    		SELECT  mem.user_no,
    				mem.user_id,

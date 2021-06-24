@@ -73,14 +73,20 @@ function replySize(){
 	<!-- 댓글 목록 -->
 	<div class="reply_box" th:each=" reply : ${replyList}">
 		<div class="profile">
-          <img src="images/sub/story/profile_test.png" alt="">
+			<th:block th:if="${reply.fullName == null}">
+	          <img src="/image/sub/story/profile_test.png" alt="이미지가 없습니다.">
+			</th:block>
+			<th:block th:if="${reply.fullName != null}">
+	          <img th:src="@{|/file/displayFile?fileName=${reply.fullName}|}" alt="">
+			</th:block>
+          
         </div>
         <div class="info">
         	<p class="name replyWriter" th:text=${reply.writer}></p>
         	<p class="date replyDate" th:text="${#dates.format(reply.regDate, 'yyyy-MM-dd')}"></p>
         </div>
 		<div class="replyContent" th:text=${reply.content}></div>
-		<div class="btn"  th:if="${reply.writer == userId}">
+		<div class="btn"  th:if="${reply.writer == memberInfo.nickname}">
            <a href="javascript:;" title="" class="re_reply">댓글</a>
            <a href="javascript:;" title="" class="re_write btnReplyModify" th:data="${reply.replyNo}">수정</a>
            <a href="javascript:;" title="" class="re_delete btnReplyRemove"  th:data="${reply.replyNo}">삭제</a>

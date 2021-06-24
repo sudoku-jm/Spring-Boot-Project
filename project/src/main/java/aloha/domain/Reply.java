@@ -13,4 +13,7 @@ public class Reply {
 	private String writer;
 	private Date regDate;
 	
+	private String fullName;
+	private int userNo;
+	
 }

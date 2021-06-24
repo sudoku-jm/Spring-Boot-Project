@@ -139,11 +139,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 	
 	<select id="replyList" resultType="Reply">
-		SELECT * 
-		FROM story_reply 
-		WHERE board_no = #{boardNo}
-		ORDER BY reply_no DESC,
-				 reg_date DESC
+		SELECT reply_info.*, img.full_name
+		FROM (
+				SELECT reply.*, info.user_no
+				FROM story_reply reply
+					,member_info info
+				WHERE reply.writer = info.nickname
+				  AND reply.board_no = #{boardNo}
+		) reply_info
+		  LEFT JOIN (SELECT *  from member_img img WHERE category = 'thumbnail') img
+		  ON reply_info.user_no = img.user_no
+		  ORDER BY reply_info.reply_no DESC
+				  ,reply_info.reg_date DESC
 	</select>
 	
 	

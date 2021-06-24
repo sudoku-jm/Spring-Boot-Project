@@ -216,7 +216,7 @@ public class StoryController {
 	public String read(Model model, Integer boardNo, Principal user) throws Exception {
 		
 		Story story = service.read(boardNo);
-		
+
 		if( story == null ) {
 			model.addAttribute("msg", "조회할 수 없는 게시글입니다.");
 			return "subpage/story/empty";
@@ -230,7 +230,7 @@ public class StoryController {
 			int userNo = member.getUserNo(); //userNo를 가져옴
 			
 			MemberInfo memberInfo = memberService.readMemberInfo(userNo);
-			
+	
 			
 			model.addAttribute("userId", userId);
 			model.addAttribute("memberInfo",memberInfo);
@@ -239,8 +239,9 @@ public class StoryController {
 			
 		}
 		
-		String writerId = story.getWriter();
-		if( writerId.equals(userId) ) {
+		String writer = story.getWriter();
+	
+		if( writer.equals(userId) ) {
 			model.addAttribute("set", true);//작성자일 경우만 수정,삭제 노출
 		}
 		
@@ -574,7 +575,14 @@ public class StoryController {
 		String userId = "";
 		if( user != null ) {
 			userId = user.getName();
+			Member member = memberService.read(userId); // userId로 member조회
+			int userNo = member.getUserNo(); //userNo를 가져옴
+			
+			MemberInfo memberInfo = memberService.readMemberInfo(userNo);
+	
+			
 			model.addAttribute("userId", userId);
+			model.addAttribute("memberInfo",memberInfo);
 		}
 		
 		// 댓글 등록 
@@ -594,7 +602,14 @@ public class StoryController {
 		String userId = "";
 		if( user != null ) {
 			userId = user.getName();
+			Member member = memberService.read(userId); // userId로 member조회
+			int userNo = member.getUserNo(); //userNo를 가져옴
+			
+			MemberInfo memberInfo = memberService.readMemberInfo(userNo);
+	
+			
 			model.addAttribute("userId", userId);
+			model.addAttribute("memberInfo",memberInfo);
 		}
 		
 		log.info("#replyModify");
@@ -618,7 +633,14 @@ public class StoryController {
 		String userId = "";
 		if( user != null ) {
 			userId = user.getName();
+			Member member = memberService.read(userId); // userId로 member조회
+			int userNo = member.getUserNo(); //userNo를 가져옴
+			
+			MemberInfo memberInfo = memberService.readMemberInfo(userNo);
+	
+			
 			model.addAttribute("userId", userId);
+			model.addAttribute("memberInfo",memberInfo);
 		}
 		
 		// 댓글 삭제
@@ -739,6 +761,7 @@ public class StoryController {
 		model.addAttribute("msg", "등록이 완료되었습니다.");
 		return "subpage/story/success";
 	}
-		
+	
+
 	
 }
