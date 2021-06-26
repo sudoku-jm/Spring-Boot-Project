@@ -309,8 +309,28 @@ background-repeat: no-repeat; border:1px solid #ececec;vertical-align: top;font-
 .profile_past .radio_box{margin:5px 0 0 0;}
 
 
+.profile_popup{padding:10px;}
+.profile_popup h1{padding:0 0 10px 0;font-size:22px;}
+.profile_photo{padding:10px 0;}
+.profile_photo .img{margin:0 auto;width:50px;height:50px;border:1px solid #e3e3e3;border-radius: 50%;overflow: hidden;}
+.profile_photo .img img{width:100%;}
 
+.profile_user{padding: 10px 0;border-top:1px solid #e3e3e3;border-bottom:1px solid #e3e3e3; }
+.profile_user li{margin:0 0 5px 0;font-size:12px;}
+.profile_user .profile_sns {margin:10px 0 0 0}
+.profile_user li span{display:inline-block; width:80px;color:#777;}
+.profile_user .profile_sns li{float:left;margin:0 10px 0 0;}
+.profile_user .profile_sns li a{display:block; width:45px;height:45px; background:url('../image/common/sns_icon.png')no-repeat 0 0 #f9f9f9;border-radius: 50%;}
+.profile_user .profile_sns .insta{background:url('../image/common/sns_icon.png')no-repeat -79px -81px;}
+.profile_user .profile_sns .blog{background:url('../image/common/sns_icon.png')no-repeat -150px -81px;}
+.profile_user .profile_sns .github{background:url('../image/common/sns_icon.png')no-repeat -216px -84px}
 
+.profile_user_history {margin-top:10px;}
+.profile_user_history h3{margin-top:10px;padding:0 0 10px 0;font-size:15px;}
+.profile_user_history ul{border-top:1px solid #e3e3e3;}
+.profile_user_history li a{font-size:12px;color:#444;}
+.profile_user_history li a p{display:inline-block;margin-right:10px;width:calc(100% - 80px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align: middle;}
+.profile_user_history .date{color:#777;vertical-align: middle;}
 
 /* 미디어쿼리 */
 @media all and (max-width:1200px){

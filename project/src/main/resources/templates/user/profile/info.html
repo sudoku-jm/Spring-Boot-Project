@@ -8,6 +8,51 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>프로필 정보</h1>
+<div layout:fragment="content">
+	<div class="profile_popup">
+		<h1>프로필 정보</h1>
+		<div class="profile_photo">
+			<div class="img">
+				<img src="/image/sub/story/profile_test.png" alt="이미지가 없습니다.">
+			</div>
+		</div><!-- //profile_photo -->
+		<div class="profile_user">
+			<ul class="profile_user_info">
+				<li><span>닉네임</span> 홍길동</li>
+				<li><span>이메일</span> 주소</li>
+				<li><span>홈페이지</span> 주소</li>
+				<li><span>SNS</span> 
+					<ul class="profile_sns clfix">
+						<li>
+							<a href="javascript:;" title="인스타그램 이동" class="insta"></a>
+						</li>
+						<li>
+							<a href="javascript:;" title="블로그 이동" class="blog"></a>
+						</li>
+						<li>
+							<a href="javascript:;" title="깃허브 이동" class="github"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div><!-- //profile_user -->
+		<div class="profile_user_history">
+			<h3>게시글 활동</h3>
+			<ul>
+				<li><a href="javascript:;" title=""><p>게시글 제목게시글 제목게시글 제목게시글 제목게시글 제목게시글 제목게시글 제목게시글 제목</p><span class="date">2021-06-26</span></a> </li>
+				<li><a href="javascript:;" title=""><p>게시글 제목</p><span class="date">2021-06-26</span></a> </li>
+				<li><a href="javascript:;" title=""><p>게시글 제목</p><span class="date">2021-06-26</span></a> </li>
+				<li><a href="javascript:;" title=""><p>게시글 제목</p><span class="date">2021-06-26</span></a> </li>
+			</ul>
+			<h3>댓글 활동</h3>
+			<ul>
+				<li><a href="javascript:;" title=""><p>댓글 내용</p><span class="date">2021-06-26</span></a> </li>
+				<li><a href="javascript:;" title=""><p>댓글 내용</p><span class="date">2021-06-26</span></a> </li>
+				<li><a href="javascript:;" title=""><p>댓글 내용</p><span class="date">2021-06-26</span></a> </li>
+				<li><a href="javascript:;" title=""><p>댓글 내용</p><span class="date">2021-06-26</span></a> </li>
+			</ul>
+		</div><!-- //profile_user_history -->
+	</div>
+</div>
 </body>
 </html>
