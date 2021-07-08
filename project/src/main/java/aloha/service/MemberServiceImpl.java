@@ -10,6 +10,7 @@ import aloha.domain.Member;
 import aloha.domain.MemberAuth;
 import aloha.domain.MemberImg;
 import aloha.domain.MemberInfo;
+import aloha.domain.MemberLink;
 import aloha.mapper.MemberMapper;
 
 @Service
@@ -110,6 +111,47 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public MemberImg readProfileImg(int userNo) throws Exception {
 		return mapper.readProfileImg(userNo);
+	}
+
+	@Override
+	public Member readByUserNo(int userNo) throws Exception {
+		return mapper.readByUserNo(userNo);
+	}
+
+	@Override
+	public int checkLinkType(MemberLink memberLink) throws Exception {
+		return mapper.checkLinkType(memberLink);
+	}
+
+	@Override
+	public void updateSnsUrl(MemberLink memberLink) throws Exception {
+		
+		int check = mapper.checkLinkType(memberLink); //해당 링크가 존재하는지 count 조회.
+		
+		//기존 URL이 존재
+		if( check > 0 ) {
+			mapper.updateSnsUrl(memberLink);
+		}else {
+			mapper.insertSnsUrl(memberLink);
+		}
+		
+		mapper.updateSnsUrl(memberLink);
+	}
+
+	@Override
+	public void insertSnsUrl(MemberLink memberLink) throws Exception {
+		mapper.insertSnsUrl(memberLink);
+		
+	}
+
+	@Override
+	public List<MemberLink> readSnsUrl(int userNo) throws Exception {
+		return mapper.readSnsUrl(userNo);
+	}
+
+	@Override
+	public List<MemberImg> profileList(int userNo) throws Exception {
+		return mapper.profileList(userNo);
 	}
 	
 	

@@ -1,6 +1,7 @@
 package aloha.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import aloha.domain.Member;
 import aloha.domain.MemberImg;
 import aloha.domain.MemberInfo;
+import aloha.domain.MemberLink;
 import aloha.service.MemberService;
 
 @Controller
@@ -93,6 +95,12 @@ public class MemberController {
 		//프로필 이미지 조회
 		MemberImg memberImg = service.readProfileImg(userNo);
 		
+		// sns 링크 조회
+		List<MemberLink> snsList = service.readSnsUrl(userNo);
+		
+		// 프로필 전체 조회
+		List<MemberImg> profileList = service.profileList(userNo);
+		
 		log.info("member : " + member);
 		log.info("memberInfo : " + memberInfo);
 		log.info("memberImg : " + memberImg);
@@ -100,18 +108,30 @@ public class MemberController {
 		model.addAttribute("member",member);
 		model.addAttribute("memberInfo",memberInfo);
 		model.addAttribute("memberImg",memberImg);
+		model.addAttribute("snsList",snsList);
+		model.addAttribute("profileList",profileList);
 	
+		
 				
 	}
 	
 	
 	// 회원정보 수정 처리
 	@PostMapping("/change")
-	public String profileChange(Model model,Member member,MemberInfo memberInfo) throws Exception{
+	public String profileChange(Model model,Member member,MemberInfo memberInfo,String[] snsName,String[] snsUrl) throws Exception{
 		
 		//넘어오는 정보 확인
 		log.info(member.toString());
 		log.info(memberInfo.toString());
+		
+		for(int i = 0; i < snsName.length; i++) {
+			MemberLink memberLink = new MemberLink();
+			memberLink.setUserNo(member.getUserNo());
+			memberLink.setLinkType(snsName[i]);
+			memberLink.setLink(snsUrl[i]);
+			
+			service.updateSnsUrl(memberLink);
+		}
 		
 		service.changeProfile(member,memberInfo);
 		/*
@@ -208,6 +228,15 @@ public class MemberController {
 	@GetMapping("/profile/info")
 	public void profileInfo(Model model,Integer userNo) throws Exception{
 		log.info("userNo : " + userNo);		
+
+		model.addAttribute("user", service.readMemberInfo(userNo));
+		model.addAttribute("profile", service.readProfileImg(userNo));
+
+		// sns 링크 조회
+		List<MemberLink> snsList = service.readSnsUrl(userNo);
+	
+		model.addAttribute("snsList",snsList);
+
 	}
 
 	

@@ -166,6 +166,52 @@
    </select>
    
    
+   <!-- user_no로 회원정보 조회 -->
+   <select id="readByUserNo" resultType="Member">
+   		SELECT *
+   		FROM member
+   		WHERE user_no = #{userNo} 
+   </select>
+   
+   
+   <!-- linkType이 존재하는지 조회 -->
+   <select id="checkLinkType" resultType="int">
+   	SELECT COUNT(*)
+   	FROM member_link
+   	WHERE user_no = #{userNo}
+   		AND link_type = #{linkType}
+   </select>
+   
+   
+   <!-- snsUrl 수정 -->
+   <update id="updateSnsUrl">
+   		UPDATE member_link
+   			SET link = #{link}
+   		WHERE user_no = #{userNo}
+   			AND link_type = #{linkType}
+   </update>
+   
+   
+   <!-- snsUrl 추가 -->
+   	<insert id="insertSnsUrl">
+   		INSERT INTO member_link (user_no, link_type, link)
+   			VALUES( #{userNo}, #{linkType}, #{link} )
+   	</insert>
+   	
+   	<!-- snsUrl 조회 -->
+   <select id="readSnsUrl" resultType="MemberLink">
+   		SELECT *
+   		FROM member_link
+   		WHERE user_no = #{userNo}
+   </select>
+   
+   <!-- 프로필 전체 조회 -->
+   <select id="profileList" resultType="MemberImg">
+   	SELECT *
+   	FROM member_img
+   	WHERE user_no = #{userNo}
+   	ORDER BY category DESC
+   </select>
    
 </mapper>
 

@@ -13,24 +13,37 @@
 		<h1>프로필 정보</h1>
 		<div class="profile_photo">
 			<div class="img">
-				<img src="/image/sub/story/profile_test.png" alt="이미지가 없습니다.">
+			<!-- 	<img src="/image/sub/story/profile_test.png" alt="이미지가 없습니다."> -->
+			
+				<th:block th:if="${profile.fullName == null}">
+		          <img src="/image/sub/story/profile_test.png" alt="이미지가 없습니다.">
+				</th:block>
+				<th:block th:if="${profile.fullName != null}">
+					<a href="javascript:;" title="" class="profilePopup" th:data="${profile.userNo}">
+		          		<img th:src="@{|/file/displayFile?fileName=${profile.fullName}|}" alt="">
+					</a>
+				</th:block>
+	          
+		   
 			</div>
 		</div><!-- //profile_photo -->
 		<div class="profile_user">
 			<ul class="profile_user_info">
-				<li><span>닉네임</span> 홍길동</li>
-				<li><span>이메일</span> 주소</li>
-				<li><span>홈페이지</span> 주소</li>
+				<li><span>닉네임</span> <span th:text=${user.nickname}></span></li>
+				<li><span>이메일</span> <span th:text=${user.email}></span></li>
+				<li><span>홈페이지</span> <a th:href="${user.url}" target="_blank" th:text=${user.url}></a></li>
 				<li><span>SNS</span> 
 					<ul class="profile_sns clfix">
-						<li>
-							<a href="javascript:;" title="인스타그램 이동" class="insta"></a>
-						</li>
-						<li>
-							<a href="javascript:;" title="블로그 이동" class="blog"></a>
-						</li>
-						<li>
-							<a href="javascript:;" title="깃허브 이동" class="github"></a>
+						<li th:each="sns : ${snsList}">
+							<th:block th:if="${sns.linkType == 'instargram'}">
+								<a th:href="${sns.link}" title="인스타그램 이동" class="insta" target="_blank"></a>
+							</th:block>
+							<th:block th:if="${sns.linkType == 'blog'}">
+								<a th:href="${sns.link}" title="블로그 이동" class="blog" target="_blank"></a>
+							</th:block>
+							<th:block th:if="${sns.linkType == 'git'}">
+								<a th:href="${sns.link}" title="깃허브 이동" class="github" target="_blank"></a>
+							</th:block>
 						</li>
 					</ul>
 				</li>

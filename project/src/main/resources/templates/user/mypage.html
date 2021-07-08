@@ -10,7 +10,7 @@
 <body>
 	<div layout:fragment="content">
 
-		<div class="profile_wrap pdb60 clfix">
+		<div class="profile_wrap pdb40 clfix">
 		
 			<div class="profile_view clfix"> 
 				
@@ -38,23 +38,31 @@
 			</div>
 			
 			<div class="profile_list">
-				<ul class="clfix">
-					<li>
-						<div class="profile_past">
-							<a href="javascript:;" title="" class="delete_profile">x</a>
-							<div class="img">
-								<img src="../image/no_img.png" alt="">
+				<form id="thumbnailForm" th:action="@{changeThumbnail}" method="post">
+					<ul class="clfix">
+						<li th:each="profile : ${profileList}">
+							<div class="profile_past">
+								<a href="javascript:;" title="" class="delete_profile">x</a>
+								<div class="img">
+									<img th:src="@{|/file/displayFile?fileName=${profile.fullName}|}" alt="">
+								</div>
+								<div class="radio_box">
+									<th:block th:if="${profile.category == 'thumbnail'}">
+					                   <input type="radio" name="profileImg" th:id="|profile-${profile.imgNo}|" value="${profile.imgNo}" checked="checked">
+									</th:block>
+									<th:block th:if="${profile.category != 'thumbnail'}">
+					                   <input type="radio" name="profileImg" th:id="|profile-${profile.imgNo}|" value="${profile.imgNo}">
+									</th:block>
+				                   <label th:for="|profile-${profile.imgNo}|"></label>
+				                 </div>
 							</div>
-							<div class="radio_box">
-			                   <input type="radio" name="" id="" value="3">
-			                   <label for=""></label>
-			                 </div>
-						</div>
-					</li>				
-				</ul>
+						</li>				
+					</ul>
+				</form>
 			</div><!-- //profile_list -->
 			
 			<div class="txtr">
+				<a href="javascript:;" title="" class="btn btn_submit mrt10" id="btnChangeProfile">대표 프로필 변경</a>
 				<a href="javascript:;" title="" class="btn btn_submit mrt10" id="btnUpdateProfile">프로필 변경</a>
 			</div>
 
@@ -63,6 +71,7 @@
 		<!--//profile_wrap  -->
 		
 		<form id="profileForm" th:action="@{change}" method="post">
+			<input type="hidden" name="userNo" th:value="${member.userNo}" />
 		
 			<div class="join_wrap" th:object="${member}">
 					<table>
@@ -98,6 +107,35 @@
 							<td><input type="text" name="url"  th:value="${memberInfo.url}"/></td>
 						</tr>
 					</table>
+					
+					
+					<br>
+					
+					<!-- SNS -->
+					<div class="txtr pdb10">
+						<a href="javascript:;" title="추가" id="btnAdd">
+							<img th:src="@{/image/common/add.png}" alt="">
+						</a>
+					</div>
+					
+					<table id="snsTable">
+						<colgroup>
+							<col style="width: 20%">
+							<col style="width: 12%">
+							<col style="width: auto">
+						</colgroup>
+						<tr th:each="sns : ${snsList}">
+							<th>SNS</th>
+							<td>
+								<select name="snsName" class="w100">
+									<option th:value="${sns.linkType}" th:text="${sns.LinkType}"></option>
+								</select>
+							</td>
+							<td><input type="text" name="snsUrl" th:value="${sns.link}" class="w100"/></td>
+						</tr>
+					</table>
+					<!-- //SNS -->
+					
 	
 				<div class="btn_box">
 					<button type="submit" id="btnChangeProfile" class="btn btn_submit">수정 완료</button>
@@ -118,6 +156,11 @@
 			var profileForm = $('#profileForm');
 			
 			
+			// 대표 프로필 변경 버튼 클릭 이벤트
+			$('#btnChangeProfile').on('click',function(){
+				thumbnailForm.submit();
+			});		
+			
 			//프로필 변경 버튼 클릭 이벤트
 			$('#btnUpdateProfile').on('click',function(){
 				uploadForm.submit();
@@ -128,6 +171,80 @@
 				profileForm.submit();
 			});		
 			
+			//sns 추가 버튼 클릭 이벤트
+	       
+	         $('#btnAdd').on('click',function() {
+	            
+	        	 var length = 1 + $('#snsTable tr').length;
+	            
+	            
+	            var option = ``;
+	            var optionName = ['instargram', 'blog', 'git'];
+	            var selectedSns = $("[name='snsName'] option:selected").get();
+	            var deleteIndex = new Array(); 
+	            
+	            console.log(selectedSns);
+	            
+	            for( var i = 0 ; i < optionName.length ; i++ ){
+	               
+	               for( var j = 0; j < selectedSns.length ; j++ ){
+	                  if( optionName[i] == selectedSns[j].innerText ) {
+	                     deleteIndex.push(i);   
+//	                      console.log("deleteIndex : " + i);
+	                  }                  
+	               }
+	            }
+	            
+	            for( var i = 0 ; i < deleteIndex.length ; i++ ){
+	               var idx = deleteIndex[i];
+	               optionName[idx] = "";
+	            }
+
+	            
+	            if( length > 3 ) {
+	               alert("sns url은 최대 3개까지 등록할 수 있습니다.");
+	               return;
+	            }
+	            
+	            
+	            for( var i = 0 ; i < optionName.length ; i++ ){
+	               if( optionName[i] != "" ){
+	                  option += `<option value=`
+	                        + `"` + optionName[i] + `"`
+	                        + `>` + optionName[i] + `</option>`;
+	               }
+	                     
+	            }
+	            
+	            
+	             var tr = `
+	                     <tr>
+	                  <th>SNS</th>
+	                  <td>
+	                     <select name="snsName" class="w100" id="sns` + length + `">
+	                     `
+	                     +
+	                        `
+//	                         + option +
+//	                           <option value="instargram">instargram</option>                           
+//	                   <option value="blog">blog</option>                           
+//	                   <option value="git">git</option>                     
+	                        `
+	                     +
+	                     `
+	                     </select>
+	                  </td>
+	                  <td><input type="text" name="snsUrl" value="" class="w100"/></td>
+	               </tr>
+	                     `
+	                     
+	                     
+	                     ;
+	                 
+	            $('#snsTable').append(tr);
+	            $('#sns' + length).empty();
+	            $('#sns' + length).append(option);
+	         });
 			
 		});
 		

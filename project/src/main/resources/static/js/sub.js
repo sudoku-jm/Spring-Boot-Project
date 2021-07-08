@@ -62,6 +62,7 @@ $(document).ready(function() {
   	
   });
   */
+
   
   $('.detail_write_wrap .img_view .img').on('click',function(){
   
@@ -71,6 +72,7 @@ $(document).ready(function() {
     	}
       imgViewCheckThum(this);
     });
+  
   $('.detail_write_wrap .img_view .radio_box').on('click',function(){
 
     if( $(this).closest('li').find('.uploadImg').attr('src') == '/image/no_img.png' ) {

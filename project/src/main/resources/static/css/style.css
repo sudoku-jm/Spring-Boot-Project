@@ -332,6 +332,7 @@ background-repeat: no-repeat; border:1px solid #ececec;vertical-align: top;font-
 .profile_user_history li a p{display:inline-block;margin-right:10px;width:calc(100% - 80px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align: middle;}
 .profile_user_history .date{color:#777;vertical-align: middle;}
 
+
 /* 미디어쿼리 */
 @media all and (max-width:1200px){
 header .top{width:100%;}
